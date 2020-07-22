@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+
+*{
+    font-family: 'Roboto', sans-serif;
+}
+
+#title{
+    color: black;
+    text-align: center;
+    font-size: 4em;
+}
+
+#title, #memberPanel, #departmentLabel, #dataLabel, #submitButton{
+   text-align: center;
+    
+}

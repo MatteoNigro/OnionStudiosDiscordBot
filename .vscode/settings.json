@@ -1,0 +1,6 @@
+{
+    "prettier.endOfLine": "auto",
+    "editor.formatOnType": true,
+    "editor.formatOnSave": true,
+    "prettier.printWidth": 150
+}
