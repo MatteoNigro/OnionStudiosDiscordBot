@@ -11,6 +11,8 @@ client.commands = new Discord.Collection();
 
 const WebSocket = require('./WS/WebSocket');
 
+const Department = require('./WS/Department');
+
 
 // Create a list of files that store all the bot commands available in separate files ("commands" folder)
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -18,7 +20,40 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 const cooldowns = new Discord.Collection();
 
 // Connect to the WebSocket thourgh the appropiate port
-var ws = new WebSocket('123456', 5665, client);
+var webSocket = new WebSocket('123456', 5665, client);
+
+// An array that contains all the departments with its respective members
+var department = [];
+
+
+try {
+  const data = fs.readFileSync('team.json', 'utf-8');
+  if (data) {
+    const parsedData = JSON.parse(data);
+    department = parsedData;
+  }
+} catch (err) {
+  console.log(err);
+  return;
+}
+
+
+
+
+
+
+/*
+let team = new Map();
+let members = new Set();
+members.add('ciccio').add(200);
+team.set('Design', members);
+team.forEach((value, key) => {
+  console.log(`Department: ${key}`);
+  members.forEach((m) => console.log(`  ${m}`));
+})
+*/
+
+
 
 // Scroll through the collection of command files above and import them
 for (const file of commandFiles) {
@@ -102,8 +137,19 @@ client.on("message", (message) => {
 
   //#endregion
 
-  if (command.test) {
-    console.log(command.execute(message, args));
+  if (command.add) {
+    try {
+      let createdDP = command.execute(message, args, department);
+      if (createdDP != null) {
+        department.push(createdDP);
+        let data = JSON.stringify(department, null, department.length);
+        fs.writeFileSync('team.json', data);
+      }
+      return;
+    } catch (error) {
+      console.error(error);
+      message.reply('There was an error trying to execute that command!')
+    }
   }
 
   // If there is any kind of error catch it and print a message in reply
@@ -112,7 +158,7 @@ client.on("message", (message) => {
     command.execute(message, args);
   } catch (error) {
     console.error(error);
-    message.reply('there was an error trying to execute that command!');
+    message.reply('There was an error trying to execute that command!');
   }
 
   // Check and track websocket and network errors
