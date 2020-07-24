@@ -1,8 +1,8 @@
 class Department {
 
-    constructor(_depName) {
+    constructor(_depName, _members) {
         this.departmentName = _depName;
-        this.members = new Set();
+        this.members = new Set(_members);
     }
 
     AddMember(memberName) {
@@ -30,6 +30,15 @@ class Department {
         })
     }
 
+    ChangeName(_name) {
+        if (this.departmentName == _name) {
+            console.log('Il nome del dipaerimento è già questo!');
+            return;
+        }
+        this.departmentName = _name;
+        console.log('Il nome del dipartimento è stato modificato');
+    }
+
 }
 
 module.exports = Department;
@@ -38,17 +47,6 @@ module.exports = Department;
 
 
     /*
-
-
-    
-        ChangeName(_name) {
-            if (this.departmentName == _name) {
-                console.log('Il nome del dipartimento è già questo!');
-                return;
-            }
-            this.departmentName = _name;
-            console.log('Il nome del dipartimento è stato modificato');
-        }
     
         ChangeMemberName() {
             // Trovare un modo elegante di farlo attraverso la chat di Discord

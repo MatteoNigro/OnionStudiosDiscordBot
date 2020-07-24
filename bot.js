@@ -11,8 +11,6 @@ client.commands = new Discord.Collection();
 
 const WebSocket = require('./WS/WebSocket');
 
-const Department = require('./WS/Department');
-
 
 // Create a list of files that store all the bot commands available in separate files ("commands" folder)
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -24,18 +22,6 @@ var webSocket = new WebSocket('123456', 5665, client);
 
 // An array that contains all the departments with its respective members
 var department = [];
-
-// Tries to catch data from file (sort of database)
-try {
-  const data = fs.readFileSync('team.json', 'utf-8');
-  if (data) {
-    const parsedData = JSON.parse(data);
-    department = parsedData;
-  }
-} catch (err) {
-  console.log(err);
-  return;
-}
 
 // Scroll through the collection of command files above and import them
 for (const file of commandFiles) {
@@ -119,25 +105,11 @@ client.on("message", (message) => {
 
   //#endregion
 
-  if (command.add) {
-    try {
-      let createdDP = command.execute(message, args, department);
-      if (createdDP != null) {
-        department.push(createdDP);
-        let data = JSON.stringify(department, null, department.length);
-        fs.writeFileSync('team.json', data);
-      }
-      return;
-    } catch (error) {
-      console.error(error);
-      message.reply('There was an error trying to execute that command!')
-    }
-  }
 
   // If there is any kind of error catch it and print a message in reply
   try {
     // Execute the given command
-    command.execute(message, args);
+    command.execute(message, args, department);
   } catch (error) {
     console.error(error);
     message.reply('There was an error trying to execute that command!');
@@ -157,4 +129,16 @@ client.on("message", (message) => {
 
 // Log in to Discord with your app's token
 client.login(token);
+
+// ======================================================== FUNCTIONS ================================================================
+
+
+function FillDepartmentData() {
+  const data = fs.readFileSync('team.json', 'utf-8');
+  if (data) {
+    const parsedData = JSON.parse(data);
+    department = parsedData;
+  }
+}
+
 
