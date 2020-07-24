@@ -10,10 +10,10 @@ module.exports = {
     execute(message, args, department) {
 
         let reply = ' ';
-        // TODO: Fare controllo lower case
         for (let i = 0; i < department.length; i++) {
-            const element = department[i];
-            if (element.departmentName.toString() == args) {
+            const element = department[i].departmentName.toString().toLowerCase();
+            const arg = args.shift().toLowerCase();
+            if (element == arg) {
                 reply = `Il dipartimento ${args} esiste già`;
                 message.channel.send(reply);
                 return;

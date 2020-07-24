@@ -25,7 +25,7 @@ var webSocket = new WebSocket('123456', 5665, client);
 // An array that contains all the departments with its respective members
 var department = [];
 
-
+// Tries to catch data from file (sort of database)
 try {
   const data = fs.readFileSync('team.json', 'utf-8');
   if (data) {
@@ -36,24 +36,6 @@ try {
   console.log(err);
   return;
 }
-
-
-
-
-
-
-/*
-let team = new Map();
-let members = new Set();
-members.add('ciccio').add(200);
-team.set('Design', members);
-team.forEach((value, key) => {
-  console.log(`Department: ${key}`);
-  members.forEach((m) => console.log(`  ${m}`));
-})
-*/
-
-
 
 // Scroll through the collection of command files above and import them
 for (const file of commandFiles) {

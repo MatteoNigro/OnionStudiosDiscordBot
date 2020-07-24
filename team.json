@@ -1,14 +1,8 @@
 [
-  {
-    "departmentName": [
-      "Design"
-    ],
-    "members": {}
-  },
-  {
-    "departmentName": [
-      "design"
-    ],
-    "members": {}
-  }
+ {
+  "departmentName": [
+   "Design"
+  ],
+  "members": {}
+ }
 ]
