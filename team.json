@@ -1,18 +1,10 @@
 [
-    {
-        "departmentName": "design",
-        "members": {}
-    },
-    {
-        "departmentName": "programming",
-        "members": {}
-    },
-    {
-        "departmentName": "concept-art",
-        "members": {}
-    },
-    {
-        "departmentName": "concept",
-        "members": {}
-    }
+  {
+    "departmentName": "design",
+    "members": {}
+  },
+  {
+    "departmentName": "programming",
+    "members": {}
+  }
 ]

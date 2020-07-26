@@ -31,12 +31,14 @@ class Department {
     }
 
     ChangeName(_name) {
-        if (this.departmentName == _name) {
-            console.log('Il nome del dipaerimento è già questo!');
-            return;
+        let reply = ' ';
+        if (this.departmentName === _name) {
+            reply = 'Il nome del dipartimento è già questo!';
+            return reply;
         }
         this.departmentName = _name;
-        console.log('Il nome del dipartimento è stato modificato');
+        reply = 'Il nome del dipartimento è stato modificato';
+        return reply;
     }
 
 }

@@ -16,19 +16,16 @@ function FillDepartmentData(department) {
     const data = fs.readFileSync('team.json', 'utf-8');
     if (data) {
         const parsedData = JSON.parse(data);
-        ConvertParsedDataToDepartment(parsedData, department);
+        for (let i = 0; i < parsedData.length; i++) {
+            const rawData = parsedData[i];
+            const arrayOfMembers = Object.values(rawData.members);
+            const newDep = new Department(rawData.departmentName, arrayOfMembers);
+            department[i] = newDep;
+        }
     }
     return department;
 }
 
 
-function ConvertParsedDataToDepartment(parsedData, department) {
-    for (let i = 0; i < parsedData.length; i++) {
-        const rawData = parsedData[i];
-        const arrayOfMembers = Object.values(rawData.members);
-        const newDep = new Department(rawData.departmentName, arrayOfMembers);
-        department[i] = newDep;
-    }
-}
 
 module.exports = { FillDepartmentData, WriteNewDPToFile }

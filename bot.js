@@ -4,6 +4,8 @@ const fs = require('fs');
 const Discord = require("discord.js");
 // Require the config.json module
 const { prefix, token } = require("./config.json");
+// Require HelperClass to read and write Json File
+const RWHelper = require('./ReadWriteHelper');
 // Create a new Discord client
 const client = new Discord.Client();
 // Create a Discord collection of commands
@@ -23,6 +25,8 @@ var webSocket = new WebSocket('123456', 5665, client);
 // An array that contains all the departments with its respective members
 var department = [];
 
+
+
 // Scroll through the collection of command files above and import them
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
@@ -32,6 +36,7 @@ for (const file of commandFiles) {
 // When the client is ready, run this code
 // this event will only trigger one time after logging in
 client.once("ready", () => {
+  department = RWHelper.FillDepartmentData(department);
   console.log("Ready!");
 });
 
@@ -58,7 +63,7 @@ client.on("message", (message) => {
   }
 
   // If arguments are required in that command and the user did't provide one
-  if (command.args && !args.length) {
+  if (command.args && !args.length || command.args && args.length != command.numberArgs) {
     let reply = `You didn't provide any arguments, ${message.author}!`;
     // if there is any command usage property in the command file
     if (command.usage) {
@@ -108,8 +113,10 @@ client.on("message", (message) => {
 
   // If there is any kind of error catch it and print a message in reply
   try {
+    department = RWHelper.FillDepartmentData(department);
     // Execute the given command
     command.execute(message, args, department);
+    //console.log('After command --> ' + department);
   } catch (error) {
     console.error(error);
     message.reply('There was an error trying to execute that command!');

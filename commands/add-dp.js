@@ -1,5 +1,4 @@
 const Department = require("../WS/Department");
-const fs = require('fs');
 const RWHelper = require('../ReadWriteHelper');
 
 module.exports = {
@@ -7,10 +6,10 @@ module.exports = {
     description: 'Add a department to the team',
     cooldown: 5,
     args: true,
+    numberArgs: 1,
     usage: '<department-name>',
     execute(message, args, department) {
 
-        department = RWHelper.FillDepartmentData(department);
         const arg = args.shift().toLowerCase();
 
         let reply = ' ';
