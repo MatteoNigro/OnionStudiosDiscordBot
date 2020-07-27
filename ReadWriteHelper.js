@@ -13,7 +13,14 @@ function WriteNewDPToFile(department) {
 }
 
 function FillDepartmentData(department) {
-    const data = fs.readFileSync('team.json', 'utf-8');
+    let data;
+    try {
+        data = fs.readFileSync('team.json', 'utf-8');
+    } catch (error) {
+        console.error(error);
+        return error;
+    }
+
     if (data) {
         const parsedData = JSON.parse(data);
         for (let i = 0; i < parsedData.length; i++) {

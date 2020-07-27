@@ -3,7 +3,7 @@ const RWHelper = require('../ReadWriteHelper');
 
 module.exports = {
     name: 'add-dp',
-    description: 'Add a department to the team',
+    description: 'Aggiunge un dipartimento al team',
     cooldown: 5,
     args: true,
     numberArgs: 1,
