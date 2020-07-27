@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "departmentName": "design",
+    "members": {}
+  },
+  {
+    "departmentName": "programming",
+    "members": {}
+  }
+]

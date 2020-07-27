@@ -23,11 +23,9 @@ class Department {
         console.log(`Il memebro ${memberName} è stato eliminato dal dipartimento`);
     }
 
-    // Da vedere se modificare con un return;
-    ShowMembers() {
-        this.members.forEach((m) => {
-            console.log(m);
-        })
+    GetMembers() {
+        const membersNames = Array.from(this.members);
+        return membersNames;
     }
 
     ChangeName(_name) {
