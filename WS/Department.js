@@ -7,11 +7,10 @@ class Department {
 
     AddMember(memberName) {
         if (this.members.has(memberName)) {
-            console.log(`Il membro ${memberName} fa già parte di questo dipartimento`);
-            return;
+            return `Il membro ${memberName} fa già parte di questo dipartimento`;
         }
         this.members.add(memberName);
-        console.log(`Il membro ${memberName} è stato aggiunto al dipartimento di ${this.departmentName}`);
+        return `Il membro ${memberName} è stato aggiunto al dipartimento di ${this.departmentName}`;
     }
 
     RemoveMember(memberName) {
