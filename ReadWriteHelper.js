@@ -3,8 +3,21 @@ const Department = require("./WS/Department");
 
 function WriteNewDPToFile(department) {
     try {
-        let data = JSON.stringify(department, null, department.length);
-        fs.writeFileSync('team.json', data);
+        //let data = JSON.stringify(department, null, department.length);
+        //fs.writeFileSync('team.json', data);
+        let arrayDp = [];
+        department.forEach(element => {
+            arrayDp.push(element.departmentName);
+        });
+        let members = [];
+        department.forEach(element => {
+            members.push(element.GetMembers());
+        });
+
+        console.log(arrayDp);
+        console.log(members);
+
+        // TODO: C'è un problema con la scrittura dei dati su file JSON
     }
     catch (error) {
         console.error(error);
