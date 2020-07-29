@@ -3,21 +3,11 @@ const Department = require("./WS/Department");
 
 function WriteNewDPToFile(department) {
     try {
-        //let data = JSON.stringify(department, null, department.length);
-        //fs.writeFileSync('team.json', data);
-        let arrayDp = [];
-        department.forEach(element => {
-            arrayDp.push(element.departmentName);
-        });
-        let members = [];
-        department.forEach(element => {
-            members.push(element.GetMembers());
-        });
+        let departmentData = [];
 
-        console.log(arrayDp);
-        console.log(members);
+        departmentData = SerializeForFileWriting(department, departmentData);
 
-        // TODO: C'è un problema con la scrittura dei dati su file JSON
+        WriteToFile(departmentData);
     }
     catch (error) {
         console.error(error);
@@ -34,6 +24,15 @@ function FillDepartmentData(department) {
         return error;
     }
 
+    department = ReconstructDepartment(data, department);
+
+    return department;
+}
+
+
+//=========================== FUNCTIONS =======================================================
+
+function ReconstructDepartment(data, department) {
     if (data) {
         const parsedData = JSON.parse(data);
         for (let i = 0; i < parsedData.length; i++) {
@@ -45,6 +44,25 @@ function FillDepartmentData(department) {
     }
     return department;
 }
+
+function WriteToFile(departmentData) {
+    const data = JSON.stringify(departmentData, null, departmentData.length);
+    fs.writeFileSync('team.json', data);
+}
+
+function SerializeForFileWriting(department, departmentData) {
+    department.forEach(element => {
+        let membersObj = {};
+        membersObj = element.GetMembers();
+        const departmentObject = {
+            departmentName: element.departmentName,
+            members: membersObj
+        };
+        departmentData.push(departmentObject);
+    });
+    return departmentData;
+}
+
 
 
 
