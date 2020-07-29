@@ -62,17 +62,27 @@ client.on("message", (message) => {
     return message.reply('I can\'t execute that command on DMs!');
   }
 
-  // If arguments are required in that command and the user did't provide one
-  if (command.args && !args.length || command.args && args.length != command.numberArgs) {
-    let reply = `You didn't provide any arguments, ${message.author}!`;
-    // if there is any command usage property in the command file
-    if (command.usage) {
-      // add the instruction about command usage
-      reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
-    }
-    // send a reply message with error or related instructions
+
+
+  let reply = ' ';
+  if (NoArguments(args, command)) {
+    reply = `You didn't provide any arguments, ${message.author}!`;
+    reply = AddUsageIfAvailable(command, reply);
     return message.channel.send(reply);
   }
+
+  if (NotEnoughArguments(args, command)) {
+    reply = `Not enough arguments provided, ${message.author}!`;
+    reply = AddUsageIfAvailable(command, reply);
+    return message.channel.send(reply);
+  }
+
+  if (NoMultipleInput(args, command)) {
+    reply = `Multiple input not supported for this command, ${message.author}!`;
+    reply = AddUsageIfAvailable(command, reply);
+    return message.channel.send(reply);
+  }
+
 
   // If the collection of cooldowns ha no such command
   if (!cooldowns.has(command.name)) {
@@ -137,15 +147,29 @@ client.on("message", (message) => {
 // Log in to Discord with your app's token
 client.login(token);
 
+
 // ======================================================== FUNCTIONS ================================================================
 
-
-function FillDepartmentData() {
-  const data = fs.readFileSync('team.json', 'utf-8');
-  if (data) {
-    const parsedData = JSON.parse(data);
-    department = parsedData;
+function AddUsageIfAvailable(command, reply) {
+  if (command.usage) {
+    reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
   }
+  return reply;
 }
+
+
+function NoMultipleInput(args, command) {
+  return command.args && args.length > command.minArgs && command.multipleInput === false;
+}
+
+function NotEnoughArguments(args, command) {
+  return command.args && args.length < command.minArgs;
+}
+
+function NoArguments(args, command) {
+  return command.args && !args.length;
+}
+
+
 
 

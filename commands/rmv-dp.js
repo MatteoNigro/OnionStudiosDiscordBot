@@ -5,7 +5,8 @@ module.exports = {
     description: 'Rimuove un dipartimento dal team',
     cooldown: 5,
     args: true,
-    numberArgs: 1,
+    minArgs: 1,
+    multipleInput: false,
     usage: '<department-name>',
     execute(message, args, department) {
         const arg = args.shift().toLowerCase();

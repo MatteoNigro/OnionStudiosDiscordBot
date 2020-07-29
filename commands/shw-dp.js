@@ -3,7 +3,8 @@ module.exports = {
     description: 'Mostra tutti i dipartimenti con i relativi membri',
     cooldown: 2,
     args: false,
-    numberArgs: 0,
+    minArgs: 0,
+    multipleInput: false,
     usage: ' ',
     execute(message, args, department) {
         if (department.length === 0) {

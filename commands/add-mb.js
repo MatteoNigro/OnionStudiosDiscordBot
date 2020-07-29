@@ -5,7 +5,8 @@ module.exports = {
     description: 'Aggiunge uno o più nuovi membri ad un dipartimento',
     cooldown: 5,
     args: true,
-    numberArgs: 3,
+    minArgs: 2,
+    multipleInput: true,
     usage: '<department-name> <member-name> <...>',
     execute(message, args, department) {
         const departmentArg = args.shift().toLowerCase();

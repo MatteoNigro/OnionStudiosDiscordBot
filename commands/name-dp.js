@@ -5,7 +5,8 @@ module.exports = {
     descroption: 'Change a department name',
     cooldown: 5,
     args: true,
-    numberArgs: 2,
+    minArgs: 2,
+    multipleInput: false,
     usage: '<old-department-name> <new-department-name>',
     execute(message, args, department) {
         const oldName = args[0].toLowerCase();
