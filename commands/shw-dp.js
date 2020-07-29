@@ -11,15 +11,41 @@ module.exports = {
             console.log('Non ci sono dipartimenti registrati');
         }
 
+        const embed = {
+            color: 0x0099ff,
+            fields: [
+                {
+                    name: ' ',
+                    value: [],
+                    inline: true,
+                },
+            ],
+        };
+
+
+        // TODO: Prolema con l'embed dinamico --> I campi dell'embed vanno prima creati, ma non possiamo hardcodare a priori il numero da creare...
+
+
+
         for (let i = 0; i < department.length; i++) {
             const element = department[i];
-            const membersNames = element.GetMembers();
-            const departmentName = element.departmentName.toString();
-            console.log(departmentName);
-            console.log(membersNames);
+            const fields = embed.fields[i];
+
+            const departmentName = element.departmentName.toUpperCase().toString();
+            const memberNames = element.GetMembers();
+
+            fields.name = departmentName;
+            fields.value = memberNames;
+            fields.inline = true;
         }
 
-        // TODO: Da finire una volta aggiunti comandi per inserire membri
+
+        message.channel.send({ embed: embed });
+
+
+
+
+
     }
 
 
