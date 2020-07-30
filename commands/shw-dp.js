@@ -1,3 +1,5 @@
+const Discord = require("discord.js");
+
 module.exports = {
     name: 'shw-dp',
     description: 'Mostra tutti i dipartimenti con i relativi membri',
@@ -7,47 +9,31 @@ module.exports = {
     multipleInput: false,
     usage: ' ',
     execute(message, args, department) {
-        if (department.length === 0) {
+        if (NoDepartments(department)) {
             console.log('Non ci sono dipartimenti registrati');
         }
 
-        const embed = {
-            color: 0x0099ff,
-            fields: [
-                {
-                    name: ' ',
-                    value: [],
-                    inline: true,
-                },
-            ],
-        };
+        let embed = new Discord.MessageEmbed().setColor(0x0099ff);
 
+        PopulateEmbed(department, embed);
 
-        // TODO: Prolema con l'embed dinamico --> I campi dell'embed vanno prima creati, ma non possiamo hardcodare a priori il numero da creare...
-
-
-
-        for (let i = 0; i < department.length; i++) {
-            const element = department[i];
-            const fields = embed.fields[i];
-
-            const departmentName = element.departmentName.toUpperCase().toString();
-            const memberNames = element.GetMembers();
-
-            fields.name = departmentName;
-            fields.value = memberNames;
-            fields.inline = true;
-        }
-
-
-        message.channel.send({ embed: embed });
-
-
-
-
-
+        message.channel.send(embed);
     }
 
+}
 
+//==================================== FUNCTIONS =================================================================
 
+function PopulateEmbed(department, embed) {
+    for (let i = 0; i < department.length; i++) {
+        const element = department[i];
+
+        const departmentName = element.departmentName.toUpperCase().toString();
+        const memberNames = element.GetMembers();
+        embed.addField(departmentName, memberNames, true);
+    }
+}
+
+function NoDepartments(department) {
+    return department.length === 0;
 }
