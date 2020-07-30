@@ -63,7 +63,4 @@ function SerializeForFileWriting(department, departmentData) {
     return departmentData;
 }
 
-
-
-
 module.exports = { FillDepartmentData, WriteNewDPToFile }

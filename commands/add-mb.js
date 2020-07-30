@@ -17,7 +17,7 @@ module.exports = {
 
         if (!dep) {
             reply = 'Il primo argomento DEVE essere il nome di un dipartimeto esistente!';
-            console.log(reply);
+            message.channel.send(reply);
             return;
         }
 

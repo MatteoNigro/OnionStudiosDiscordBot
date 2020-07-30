@@ -1,33 +1,18 @@
-// Require the native Node's fyle system module
 const fs = require('fs');
-// Require the discord.js module
 const Discord = require("discord.js");
-// Require the config.json module
 const { prefix, token } = require("./config.json");
-// Require HelperClass to read and write Json File
 const RWHelper = require('./ReadWriteHelper');
-// Create a new Discord client
+
 const client = new Discord.Client();
-// Create a Discord collection of commands
 client.commands = new Discord.Collection();
-
 const WebSocket = require('./WS/WebSocket');
-
-
-// Create a list of files that store all the bot commands available in separate files ("commands" folder)
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-
 const cooldowns = new Discord.Collection();
 
-// Connect to the WebSocket thourgh the appropiate port
 var webSocket = new WebSocket('123456', 5665, client);
 
-// An array that contains all the departments with its respective members
 var department = [];
 
-
-
-// Scroll through the collection of command files above and import them
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);

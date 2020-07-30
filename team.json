@@ -2,17 +2,14 @@
   {
     "departmentName": "design",
     "members": [
-      "matteo",
-      "alex",
-      "ciccio",
-      "oh"
+      "parto",
+      "delta"
     ]
   },
   {
     "departmentName": "programming",
     "members": [
-      "riccardo",
-      "eleonora"
+      "riccardo"
     ]
   }
 ]

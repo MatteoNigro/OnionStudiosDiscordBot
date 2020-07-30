@@ -7,19 +7,19 @@ class Department {
 
     AddMember(memberName) {
         if (this.members.has(memberName)) {
-            return `Il membro ${memberName} fa già parte di questo dipartimento`;
+            return `Il membro "${memberName}" fa già parte di questo dipartimento`;
         }
         this.members.add(memberName);
-        return `Il membro ${memberName} è stato aggiunto al dipartimento di ${this.departmentName}`;
+        return `Il membro "${memberName}" è stato aggiunto al dipartimento di ${this.departmentName}`;
     }
 
     RemoveMember(memberName) {
         if (!this.members.has(memberName)) {
-            console.log(`Il membro ${_memeberName} che si vuole eliminare non è nel dipartimento`);
-            return;
+            return `Il membro "${memberName}" che si vuole eliminare non è nel dipartimento`;
         }
+
         this.members.delete(memberName);
-        console.log(`Il memebro ${memberName} è stato eliminato dal dipartimento`);
+        return `Il membro "${memberName}" è stato eliminato dal dipartimento`;
     }
 
     GetMembers() {
@@ -42,13 +42,3 @@ class Department {
 
 module.exports = Department;
 
-
-
-
-    /*
-    
-        ChangeMemberName() {
-            // Trovare un modo elegante di farlo attraverso la chat di Discord
-        }
-    
-        */

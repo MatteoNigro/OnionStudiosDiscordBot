@@ -9,8 +9,11 @@ module.exports = {
     multipleInput: false,
     usage: ' ',
     execute(message, args, department) {
+        let reply = ' ';
         if (NoDepartments(department)) {
-            console.log('Non ci sono dipartimenti registrati');
+            reply = 'Non ci sono dipartimenti registrati';
+            message.channel.send(reply);
+            return;
         }
 
         let embed = new Discord.MessageEmbed().setColor(0x0099ff);
