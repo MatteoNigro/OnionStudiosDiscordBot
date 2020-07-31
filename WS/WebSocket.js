@@ -7,6 +7,8 @@ class WebSocket {
     constructor(token, port, client) {
         this.token = token;
         this.client = client;
+        this.port = port;
+        this.connected = false;
 
         this.app = express();
         this.app.engine('hbs', hbs({
@@ -25,10 +27,14 @@ class WebSocket {
 
         this.RegisterRoots();
 
-        this.server = this.app.listen(port, () => {
-            console.log(`Websocket listening on port ${this.server.address().port}`);
-        });
 
+    }
+
+    OpenConnection() {
+        this.server = this.app.listen(this.port, () => {
+            console.log(`Websocket listening on port ${this.server.address().port}`);
+            this.connected = true;
+        });
     }
 
     checkToken(_token) {
@@ -64,7 +70,6 @@ class WebSocket {
 
             var chan = this.client.guilds.cache.first().channels.cache.get(channelid);
 
-            // Send content to the Discord server
             if (chan) {
                 chan.send(text);
             }
@@ -80,6 +85,21 @@ class WebSocket {
                 chans.push({ id: c.id, name: c.name });
             });
         return chans;
+    }
+
+    GenerateWebLink() {
+        const base = 'http://localhost';
+        const port = this.port;
+        const token = this.token;
+        const link = `${base}:${port}?token=${token}`;
+        return link;
+    }
+
+    CloseConnection() {
+        if (this.connected = false)
+            return;
+        this.server.close();
+        this.connected = false;
     }
 
 }

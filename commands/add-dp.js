@@ -23,7 +23,10 @@ module.exports = {
             }
         }
 
-        let createdDP = new Department(arg);
+
+
+        const genID = '123';
+        let createdDP = new Department(arg, genID);
         department.push(createdDP);
 
         const error = RWHelper.WriteNewDPToFile(department);
@@ -39,6 +42,10 @@ module.exports = {
 
 function AlreadyExist(element, arg) {
     return element == arg;
+}
+
+function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 

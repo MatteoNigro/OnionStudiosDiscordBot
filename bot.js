@@ -2,14 +2,14 @@ const fs = require('fs');
 const Discord = require("discord.js");
 const { prefix, token } = require("./config.json");
 const RWHelper = require('./ReadWriteHelper');
+//const WebSocket = require('./WS/WebSocket');
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
-const WebSocket = require('./WS/WebSocket');
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const cooldowns = new Discord.Collection();
 
-var webSocket = new WebSocket('123456', 5665, client);
+//var webSocket = new WebSocket('123456', 5665, client);
 
 var department = [];
 
@@ -18,36 +18,24 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
-// When the client is ready, run this code
-// this event will only trigger one time after logging in
 client.once("ready", () => {
   department = RWHelper.FillDepartmentData(department);
   console.log("Ready!");
 });
 
-// When someone writes a message on chat
 client.on("message", (message) => {
-  // If the written message doesn't start with the bot prefix or
-  // the was written by the bot itself, just return doing nothing
+
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-  // Isolate the arguments of the writtenc command
   const args = message.content.slice(prefix.length).split(/ +/);
-  // Isolate the name of the command (the one after the bot prefix)
   const commandName = args.shift().toLowerCase();
-
-  // Get the command associated with the command name or the aliasis set in the command file
   const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
   if (!command) return;
 
-  // If there is any guildOnly property in the command file
-  // and the channel type is Direct Message
   if (command.guildOnly && message.channel.type !== 'text') {
     return message.reply('I can\'t execute that command on DMs!');
   }
-
-
 
   let reply = ' ';
   if (NoArguments(args, command)) {
@@ -68,10 +56,7 @@ client.on("message", (message) => {
     return message.channel.send(reply);
   }
 
-
-  // If the collection of cooldowns ha no such command
   if (!cooldowns.has(command.name)) {
-    // Add it in
     cooldowns.set(command.name, new Discord.Collection());
   }
 
@@ -105,31 +90,25 @@ client.on("message", (message) => {
 
   //#endregion
 
-
-  // If there is any kind of error catch it and print a message in reply
   try {
     department = RWHelper.FillDepartmentData(department);
-    // Execute the given command
-    command.execute(message, args, department);
-    //console.log('After command --> ' + department);
+    command.execute(message, args, department, client);
   } catch (error) {
     console.error(error);
     message.reply('There was an error trying to execute that command!');
   }
 
-  // Check and track websocket and network errors
   client.on('shardError', error => {
     console.error('A websocket connection encountered an error: ', error);
   });
 
-  // Diagnose API errors to show more information about them
   process.on('unhandledRejection', error => {
     console.error('Unhandled promise rejection: ', error);
   });
 
+
 });
 
-// Log in to Discord with your app's token
 client.login(token);
 
 
@@ -154,7 +133,3 @@ function NotEnoughArguments(args, command) {
 function NoArguments(args, command) {
   return command.args && !args.length;
 }
-
-
-
-

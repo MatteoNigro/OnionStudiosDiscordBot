@@ -1,15 +1,12 @@
 [
   {
     "departmentName": "design",
-    "members": [
-      "parto",
-      "delta"
-    ]
+    "ID": "123",
+    "members": []
   },
   {
     "departmentName": "programming",
-    "members": [
-      "riccardo"
-    ]
+    "ID": "123",
+    "members": []
   }
 ]

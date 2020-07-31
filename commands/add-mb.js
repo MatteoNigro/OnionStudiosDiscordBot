@@ -21,15 +21,15 @@ module.exports = {
             return;
         }
 
-        let members = [];
+        let membersArgs = [];
 
-        members = RetrieveArguments(args, members);
+        membersArgs = RetrieveArguments(args, membersArgs);
 
 
         for (let i = 0; i < department.length; i++) {
             const element = department[i];
             if (DepartmentFound(element, departmentArg)) {
-                SendAdditionMessage(members, reply, element, message);
+                SendAdditionMessage(membersArgs, reply, element, message);
             }
         }
 
