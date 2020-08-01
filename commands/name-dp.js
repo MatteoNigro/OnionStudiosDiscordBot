@@ -8,7 +8,7 @@ module.exports = {
     minArgs: 2,
     multipleInput: false,
     usage: '<old-department-name> <new-department-name>',
-    execute(message, args, department) {
+    execute(message, args, department, link) {
         const oldName = args[0].toLowerCase();
         const newName = args[1].toLowerCase();
 

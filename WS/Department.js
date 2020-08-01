@@ -1,9 +1,8 @@
 class Department {
 
-    constructor(_depName, _id, _members) {
+    constructor(_depName, _members) {
         this.departmentName = _depName;
         this.members = new Set(_members);
-        this.id = _id;
     }
 
     AddMember(memberName) {

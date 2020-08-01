@@ -8,7 +8,7 @@ module.exports = {
     minArgs: 1,
     multipleInput: false,
     usage: '<department-name>',
-    execute(message, args, department) {
+    execute(message, args, department, link) {
         const arg = args.shift().toLowerCase();
 
         let reply = ' ';

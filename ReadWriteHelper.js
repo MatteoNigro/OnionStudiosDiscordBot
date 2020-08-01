@@ -38,7 +38,7 @@ function ReconstructDepartment(data, department) {
         for (let i = 0; i < parsedData.length; i++) {
             const rawData = parsedData[i];
             const arrayOfMembers = Object.values(rawData.members);
-            const newDep = new Department(rawData.departmentName, rawData.ID, arrayOfMembers);
+            const newDep = new Department(rawData.departmentName, arrayOfMembers);
             department[i] = newDep;
         }
     }
@@ -56,7 +56,6 @@ function SerializeForFileWriting(department, departmentData) {
         membersObj = element.GetMembers();
         const departmentObject = {
             departmentName: element.departmentName,
-            ID: element.id,
             members: membersObj
         };
         departmentData.push(departmentObject);

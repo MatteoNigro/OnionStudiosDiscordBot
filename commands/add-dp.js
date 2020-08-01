@@ -9,7 +9,7 @@ module.exports = {
     minArgs: 1,
     multipleInput: false,
     usage: '<department-name>',
-    execute(message, args, department) {
+    execute(message, args, department, link) {
 
         const arg = args.shift().toLowerCase();
 
@@ -23,10 +23,7 @@ module.exports = {
             }
         }
 
-
-
-        const genID = '123';
-        let createdDP = new Department(arg, genID);
+        let createdDP = new Department(arg);
         department.push(createdDP);
 
         const error = RWHelper.WriteNewDPToFile(department);

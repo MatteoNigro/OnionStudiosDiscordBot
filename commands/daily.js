@@ -9,20 +9,7 @@ module.exports = {
     minArgs: 0,
     multipleInput: false,
     usage: ' ',
-    execute(message, args, department, client) {
-
-
-        let rndToken = Math.random() * 10;
-        console.log(rndToken);
-
-        let webSocket = new WebSocket(`${rndToken}`, 5665, client);
-        let webSockest = new WebSocket(`${rndToken}`, 5666, client);
-
-
-        webSocket.OpenConnection();
-        //webSockest.OpenConnection();
-
-        const link = webSocket.GenerateWebLink();
+    execute(message, args, department, link) {
 
         const exampleEmbed = new Discord.MessageEmbed()
             .setColor('#0099ff')

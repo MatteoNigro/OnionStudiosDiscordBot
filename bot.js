@@ -2,14 +2,15 @@ const fs = require('fs');
 const Discord = require("discord.js");
 const { prefix, token } = require("./config.json");
 const RWHelper = require('./ReadWriteHelper');
-//const WebSocket = require('./WS/WebSocket');
+const WebSocket = require('./WS/WebSocket');
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const cooldowns = new Discord.Collection();
 
-//var webSocket = new WebSocket('123456', 5665, client);
+var webSocket = new WebSocket('123456', 5665, client);
+const link = webSocket.GenerateWebLink();
 
 var department = [];
 
@@ -92,7 +93,7 @@ client.on("message", (message) => {
 
   try {
     department = RWHelper.FillDepartmentData(department);
-    command.execute(message, args, department, client);
+    command.execute(message, args, department, link);
   } catch (error) {
     console.error(error);
     message.reply('There was an error trying to execute that command!');

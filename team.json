@@ -1,12 +1,17 @@
 [
   {
     "departmentName": "design",
-    "ID": "123",
-    "members": []
+    "members": [
+      "matteo",
+      "alex",
+      "ivan"
+    ]
   },
   {
     "departmentName": "programming",
-    "ID": "123",
-    "members": []
+    "members": [
+      "riccardo",
+      "eleonora"
+    ]
   }
 ]

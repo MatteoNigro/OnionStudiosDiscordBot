@@ -8,7 +8,7 @@ module.exports = {
     minArgs: 0,
     multipleInput: false,
     usage: ' ',
-    execute(message, args, department) {
+    execute(message, args, department, link) {
         let reply = ' ';
         if (NoDepartments(department)) {
             reply = 'Non ci sono dipartimenti registrati';

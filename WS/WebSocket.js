@@ -8,7 +8,6 @@ class WebSocket {
         this.token = token;
         this.client = client;
         this.port = port;
-        this.connected = false;
 
         this.app = express();
         this.app.engine('hbs', hbs({
@@ -27,6 +26,7 @@ class WebSocket {
 
         this.RegisterRoots();
 
+        this.OpenConnection();
 
     }
 
