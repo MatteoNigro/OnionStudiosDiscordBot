@@ -93,6 +93,7 @@ client.on("message", (message) => {
 
   try {
     department = RWHelper.FillDepartmentData(department);
+    webSocket.SendDepartmentData(department)
     command.execute(message, args, department, link);
   } catch (error) {
     console.error(error);
@@ -134,3 +135,4 @@ function NotEnoughArguments(args, command) {
 function NoArguments(args, command) {
   return command.args && !args.length;
 }
+

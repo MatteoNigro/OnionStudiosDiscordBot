@@ -9,10 +9,9 @@
     <div id="departmentLabel">
         <h2>Reparto</h2>
         <select name="department" id="reparto">
-            <option value="Programmazione">Programmazione</option>
-            <option value="Design">Design</option>
-            <option value="Concept Art">Concept Art</option>
-            <option value="3D Art">3D Art</option>
+            {{#each departments}}
+            <option>{{this}}</option>
+            {{/each}}
         </select>
     </div>
 

@@ -8,6 +8,7 @@ class WebSocket {
         this.token = token;
         this.client = client;
         this.port = port;
+        this.department;
 
         this.app = express();
         this.app.engine('hbs', hbs({
@@ -33,7 +34,6 @@ class WebSocket {
     OpenConnection() {
         this.server = this.app.listen(this.port, () => {
             console.log(`Websocket listening on port ${this.server.address().port}`);
-            this.connected = true;
         });
     }
 
@@ -52,10 +52,14 @@ class WebSocket {
 
             var chans = this.GetAllTextChannels();
 
+            let dropDownDeps = this.GetDepartmentNames();
+
+
             res.render('index', {
                 title: 'discorBot Web Interface',
                 token: _token,
-                chans
+                chans,
+                departments: dropDownDeps
             });
 
         });
@@ -77,6 +81,15 @@ class WebSocket {
     }
 
 
+    GetDepartmentNames() {
+        let deps = [];
+        for (let i = 0; i < this.department.length; i++) {
+            const element = this.department[i];
+            deps[i] = this.CapitalizeFirstLetter(element.departmentName);
+        }
+        return deps;
+    }
+
     GetAllTextChannels() {
         var chans = [];
         this.client.guilds.cache.first().channels.cache
@@ -95,12 +108,14 @@ class WebSocket {
         return link;
     }
 
-    CloseConnection() {
-        if (this.connected = false)
-            return;
-        this.server.close();
-        this.connected = false;
+    SendDepartmentData(dep) {
+        this.department = dep;
     }
+
+    CapitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
 
 }
 
