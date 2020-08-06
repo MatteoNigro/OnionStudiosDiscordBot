@@ -26,8 +26,37 @@
     <br><br>
 
     <!-- Effettive Daily Review di tutti i membri di quel reparto -->
-    <div id="memberPanel">
 
+    <!-- NOT WORKING, FIGURE OUT A WAY TO DO IT RIGHT -->
+    {{#each dep}}
+    {{#each member}}
+    {{#ifEquals "ciao" "ciao" }}
+    <h1>{{this}}</h1>
+    {{/ifEquals}}
+    {{/each}}
+    {{/each}}
+
+
+
+
+
+
+    <!--
+    <div id="memberPanel">
+        {{#each dep}}
+        {{#each this as | member |}}
+        <h3 id="member">{{member}}</h3>
+        <div id="memberDiv">
+            <h5>Cosa hai fatto nelle ultime 24 ore?</h5>
+            <textarea></textarea>
+            <h5>Cosa farai nelle prossime 24 ore?</h5>
+            <textarea></textarea>
+            <h5>Che problematiche stai affrontando?</h5>
+            <textarea></textarea>
+        </div>
+        {{/each}}
+        {{/each}}
+    </div>
         <h3 id="member1">Nome Membro 1</h3>
         <div id="member1Div">
             <h5>Cosa hai fatto nelle ultime 24 ore?</h5>
@@ -68,6 +97,8 @@
             <textarea></textarea>
         </div>
     </div>
+-->
+
     <br>
     <div id="submitButton">
         <input type="submit" value="Completa Daily Review">

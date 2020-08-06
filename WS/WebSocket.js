@@ -1,5 +1,5 @@
 const express = require('express');
-const hbs = require('express-handlebars');
+const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const path = require('path');
 
@@ -10,12 +10,24 @@ class WebSocket {
         this.port = port;
         this.department;
 
-        this.app = express();
-        this.app.engine('hbs', hbs({
+        var hbs = exphbs.create({
             extname: 'hbs',
             defaultLayout: 'layout',
-            layoutsDir: path.join(__dirname, 'views/layouts')
-        }));
+            layoutsDir: path.join(__dirname, 'views/layouts'),
+
+            // custom helpers
+            helpers: {
+                ifmatch: function (value1, value2) {
+                    return value1 === value2;
+                },
+                ifEquals: function (arg1, arg2, options) {
+                    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+                }
+            }
+        });
+
+        this.app = express();
+        this.app.engine('hbs', hbs.engine);
 
         this.app.set('views', path.join(__dirname, 'views'));
         this.app.set('view engine', 'hbs');
@@ -52,17 +64,60 @@ class WebSocket {
 
             var chans = this.GetAllTextChannels();
 
-            let dropDownDeps = this.GetDepartmentNames();
+            const dropDownDeps = this.GetDepartmentNames();
+
+            let frontEndDep = {
+                members: [{
+                    name: " ",
+                    "job": " "
+                }],
+                departments: [{
+                    name: " "
+                }]
+            };
+            /*
+                        for (let i = 0; i < this.department.length; i++) {
+                            const dep = this.department[i];
+                            const membersArray = Array.from(dep.members);
+                            console.log(membersArray);
+                            for (let j = 0; j < membersArray.length; j++) {
+                                const memb = membersArray[j];
+                                console.log(memb);
+                                frontEndDep.members[j].name = memb;
+                            }
+            
+                        }
+            
+            
+                        //console.log(frontEndDep);
+            
+            */
+
+
+
 
 
             res.render('index', {
                 title: 'discorBot Web Interface',
                 token: _token,
                 chans,
-                departments: dropDownDeps
+                departments: dropDownDeps,
+                dep: ["Design", "Programming"],
+                members: [
+                    {
+                        name: "Riccardo",
+                        job: "Programming"
+                    },
+                    {
+                        name: "Matteo",
+                        job: "Design"
+                    }
+                ]
             });
 
         });
+
+        // Other stuff
 
         this.app.post('/sendMessage', (req, res) => {
             var _token = req.body.token;

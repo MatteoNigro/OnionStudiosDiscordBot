@@ -9,8 +9,6 @@ client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const cooldowns = new Discord.Collection();
 
-var webSocket = new WebSocket('123456', 5665, client);
-const link = webSocket.GenerateWebLink();
 
 var department = [];
 
@@ -18,6 +16,9 @@ for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
 }
+
+var webSocket = new WebSocket('123456', 5665, client);
+const link = webSocket.GenerateWebLink();
 
 client.once("ready", () => {
   department = RWHelper.FillDepartmentData(department);
