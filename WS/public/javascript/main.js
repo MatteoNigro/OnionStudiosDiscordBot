@@ -1,4 +1,5 @@
 //#region TOGGLE MEMBER SECTIONS
+/*
 var member1 = document.getElementById("member");
 
 member1.onmousedown = function () {
@@ -8,7 +9,6 @@ member1.onmousedown = function () {
 
 
 
-/*
 var member2 = document.getElementById("member2")
 
 member2.onmousedown = function () {

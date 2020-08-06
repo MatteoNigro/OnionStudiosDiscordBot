@@ -28,12 +28,8 @@
     <!-- Effettive Daily Review di tutti i membri di quel reparto -->
 
     <!-- NOT WORKING, FIGURE OUT A WAY TO DO IT RIGHT -->
-    {{#each dep}}
-    {{#each member}}
-    {{#ifEquals "ciao" "ciao" }}
-    <h1>{{this}}</h1>
-    {{/ifEquals}}
-    {{/each}}
+    {{#each members as |member|}}
+    {{name}}
     {{/each}}
 
 

@@ -2,13 +2,16 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const path = require('path');
+const { Message } = require('discord.js');
 
 class WebSocket {
     constructor(token, port, client) {
         this.token = token;
         this.client = client;
         this.port = port;
-        this.department;
+
+        this.user;
+        this.team;
 
         var hbs = exphbs.create({
             extname: 'hbs',
@@ -17,12 +20,7 @@ class WebSocket {
 
             // custom helpers
             helpers: {
-                ifmatch: function (value1, value2) {
-                    return value1 === value2;
-                },
-                ifEquals: function (arg1, arg2, options) {
-                    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-                }
+
             }
         });
 
@@ -64,34 +62,12 @@ class WebSocket {
 
             var chans = this.GetAllTextChannels();
 
-            const dropDownDeps = this.GetDepartmentNames();
 
-            let frontEndDep = {
-                members: [{
-                    name: " ",
-                    "job": " "
-                }],
-                departments: [{
-                    name: " "
-                }]
-            };
-            /*
-                        for (let i = 0; i < this.department.length; i++) {
-                            const dep = this.department[i];
-                            const membersArray = Array.from(dep.members);
-                            console.log(membersArray);
-                            for (let j = 0; j < membersArray.length; j++) {
-                                const memb = membersArray[j];
-                                console.log(memb);
-                                frontEndDep.members[j].name = memb;
-                            }
-            
-                        }
-            
-            
-                        //console.log(frontEndDep);
-            
-            */
+
+
+            this.team.forEach(member => {
+
+            })
 
 
 
@@ -101,18 +77,6 @@ class WebSocket {
                 title: 'discorBot Web Interface',
                 token: _token,
                 chans,
-                departments: dropDownDeps,
-                dep: ["Design", "Programming"],
-                members: [
-                    {
-                        name: "Riccardo",
-                        job: "Programming"
-                    },
-                    {
-                        name: "Matteo",
-                        job: "Design"
-                    }
-                ]
             });
 
         });
@@ -136,15 +100,6 @@ class WebSocket {
     }
 
 
-    GetDepartmentNames() {
-        let deps = [];
-        for (let i = 0; i < this.department.length; i++) {
-            const element = this.department[i];
-            deps[i] = this.CapitalizeFirstLetter(element.departmentName);
-        }
-        return deps;
-    }
-
     GetAllTextChannels() {
         var chans = [];
         this.client.guilds.cache.first().channels.cache
@@ -162,15 +117,6 @@ class WebSocket {
         const link = `${base}:${port}?token=${token}`;
         return link;
     }
-
-    SendDepartmentData(dep) {
-        this.department = dep;
-    }
-
-    CapitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-
 
 }
 

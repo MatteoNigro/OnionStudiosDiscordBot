@@ -1,17 +1,17 @@
 [
   {
-    "departmentName": "design",
-    "members": [
-      "matteo",
-      "alex",
-      "ivan"
-    ]
+    "name": "Matteo",
+    "roles": [
+      "@everyone"
+    ],
+    "id": "399504742323060737"
   },
   {
-    "departmentName": "programming",
-    "members": [
-      "riccardo",
-      "eleonora"
-    ]
+    "name": "Test12131243242",
+    "roles": [
+      "Test12131243242",
+      "@everyone"
+    ],
+    "id": "718854733179125883"
   }
 ]

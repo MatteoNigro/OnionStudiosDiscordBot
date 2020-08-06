@@ -10,18 +10,14 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 const cooldowns = new Discord.Collection();
 
 
-var department = [];
-
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
 }
 
 var webSocket = new WebSocket('123456', 5665, client);
-const link = webSocket.GenerateWebLink();
 
 client.once("ready", () => {
-  department = RWHelper.FillDepartmentData(department);
   console.log("Ready!");
 });
 
@@ -93,9 +89,7 @@ client.on("message", (message) => {
   //#endregion
 
   try {
-    department = RWHelper.FillDepartmentData(department);
-    webSocket.SendDepartmentData(department)
-    command.execute(message, args, department, link);
+    command.execute(message, args, webSocket);
   } catch (error) {
     console.error(error);
     message.reply('There was an error trying to execute that command!');
