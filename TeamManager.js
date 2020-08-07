@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+const dpPrefix = '!';
+
 function WriteTeamToFile(team) {
     if (!team)
         return console.log("You must invoke the BuildTeam function before this!");
@@ -25,9 +27,15 @@ function BuildTeam(message) {
             id: ' '
         };
 
+        if (member.user.bot) {
+            return;
+        }
+
         singleMember.name = member.user.username;
+
         member.roles.cache.each(role => {
-            singleMember.roles.push(role.name);
+            if (role.name.startsWith(dpPrefix))
+                singleMember.roles.push(role.name);
         });
 
         singleMember.id = member.user.id;

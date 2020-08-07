@@ -19,7 +19,8 @@ module.exports = {
         const link = webSocket.GenerateWebLink();
 
         const user = message.author.username;
-        webSocket.user = user;
+        webSocket.messageRef = message;
+        webSocket.team = team;
 
         team.forEach(member => {
             if (member.name === user && member.roles.find(role => role === "Referente")) {

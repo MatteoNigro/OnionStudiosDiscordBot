@@ -1,4 +1,9 @@
 //#region TOGGLE MEMBER SECTIONS
+
+
+
+
+
 /*
 var member1 = document.getElementById("member");
 

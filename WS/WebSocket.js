@@ -10,7 +10,7 @@ class WebSocket {
         this.client = client;
         this.port = port;
 
-        this.user;
+        this.messageRef;
         this.team;
 
         var hbs = exphbs.create({
@@ -62,21 +62,84 @@ class WebSocket {
 
             var chans = this.GetAllTextChannels();
 
+            if (!this.messageRef)
+                return;
 
 
+            let error = false;
+            const user = this.messageRef.author.username;
+            let dp = ' ';
+            let members = [];
+
+            if (!user) {
+                this.messageRef.author.send('Lo user nel WebSocket non è definito, riferire all\'amministratore di sistema');
+                return;
+            }
 
             this.team.forEach(member => {
+                if (user === member.name) {
+                    const memberRoles = [];
+                    member.roles.forEach(r => {
+                        if (r.startsWith('!')) {
+                            memberRoles.push(r);
+                        }
+                    });
 
-            })
+                    if (!memberRoles.length) {
+                        error = true;
+                        this.messageRef.author.send("L'utente che sta cercando di effettuare la review non fa parte di nessun dipartimento, oppure il nome del ruolo non possiede il prefisso necessario");
+                        return;
+                    }
+                    if (memberRoles.length > 1) {
+                        error = true;
+                        this.messageRef.author.send("L'utente che sta cercando di effettuare la review risiede in più di un dipartimento! Sistemare i ruoli prima di continuare");
+                        return;
+                    }
 
+                    dp = memberRoles.shift().slice(1);
+                }
+            });
 
+            if (error) {
+                res.render('error', { title: 'ERROR', errtype: 'DEPARMENT PARAMETERS ARE NOT CORRECT' });
+                return;
+            }
 
+            this.team.forEach(member => {
+                let roles = [];
+                member.roles.forEach(r => {
+                    if (r.startsWith('!'))
+                        roles.push(r);
+                })
 
+                if (!roles.length) {
+                    error = true;
+                    this.messageRef.author.send(`Il membro ${member.name} non appartiene a nessun reparto controllare e sistemare prima di procedere`);
+                    return;
+                }
+                if (roles.length > 1) {
+                    error = true;
+                    this.messageRef.author.send(`Il membro ${member.name} risiede in più dipartimenti contemporaneamente! Sistemare i ruoli prima di procedere`);
+                    return;
+                }
+
+                if (roles.shift() === `!${dp}`)
+                    members.push(member.name);
+
+            });
+
+            if (error) {
+                res.render('error', { title: 'ERROR', errtype: 'DEPARMENT PARAMETERS ARE NOT CORRECT' });
+                return;
+            }
 
             res.render('index', {
                 title: 'discorBot Web Interface',
                 token: _token,
                 chans,
+                derpartment: dp,
+                members
+
             });
 
         });

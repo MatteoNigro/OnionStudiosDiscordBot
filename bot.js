@@ -32,7 +32,7 @@ client.on("message", (message) => {
   if (!command) return;
 
   if (command.guildOnly && message.channel.type !== 'text') {
-    return message.reply('I can\'t execute that command on DMs!');
+    return message.reply('Non posso eseguire questo comando in una chat privata, utilizza il canale apposito all\'interno del server');
   }
 
   let reply = ' ';
