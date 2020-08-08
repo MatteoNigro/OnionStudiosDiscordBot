@@ -1,5 +1,30 @@
 //#region TOGGLE MEMBER SECTIONS
 
+let membersH = [];
+$("[id*=memberH]").each(function () {
+    membersH.push(this);
+});
+
+
+
+let membersQ = [];
+$("[id*=memberQ]").each(function () {
+    membersQ.push(this);
+});
+
+
+for (let i = 0; i < membersH.length; i++) {
+    let header = membersH[i];
+    let div = membersQ[i];
+
+    header.onmousedown = function () {
+        div.style.display == "none" ? div.style.display = "block" : div.style.display = "none";
+    }
+
+}
+
+
+
 
 
 

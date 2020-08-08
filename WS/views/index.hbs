@@ -21,21 +21,26 @@
     <br><br>
 
     <!-- Effettive Daily Review di tutti i membri di quel reparto -->
-    {{#each members as |member|}}
-    <div id="memberPanel">
-        <h3 id="memberName">{{member}}</h3>
-        <div id="memberQuestions">
-            <h5>Cosa hai fatto nelle ultime 24 ore?</h5>
-            <textarea></textarea>
-            <h5>Cosa farai nelle prossime 24 ore?</h5>
-            <textarea></textarea>
-            <h5>Che problematiche stai affrontando?</h5>
-            <textarea></textarea>
+    <div class="grid-container">
+        {{#each members as |member|}}
+        <div class="grid-item">
+            <h3 id="memberH{{@index}}">{{member}}</h3>
+            <div id="memberQ{{@index}}">
+                <h5>Cosa hai fatto nelle ultime 24 ore?</h5>
+                <textarea style="font-size: 18px;" rows="5" cols="60"></textarea>
+                <h5>Cosa farai nelle prossime 24 ore?</h5>
+                <textarea style="font-size: 18px;" rows="5" cols="60"></textarea>
+                <h5>Che problematiche stai affrontando?</h5>
+                <textarea style="font-size: 18px;" rows="5" cols="60"></textarea>
+            </div>
         </div>
+        {{/each}}
     </div>
-    {{/each}}
+
 
     <br>
+
+
     <div id="submitButton">
         <input type="submit" value="Completa Daily Review">
     </div>

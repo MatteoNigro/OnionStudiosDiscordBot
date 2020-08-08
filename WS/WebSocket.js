@@ -2,7 +2,6 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const path = require('path');
-const { Message } = require('discord.js');
 
 class WebSocket {
     constructor(token, port, client) {
@@ -133,12 +132,15 @@ class WebSocket {
                 return;
             }
 
+            this.members = members;
+
+
             res.render('index', {
                 title: 'discorBot Web Interface',
                 token: _token,
                 chans,
                 derpartment: dp,
-                members
+                members: members
 
             });
 
