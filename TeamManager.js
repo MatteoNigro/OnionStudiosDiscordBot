@@ -10,8 +10,7 @@ function WriteTeamToFile(team) {
     try {
         data = JSON.stringify(team, null, team.length);
         fs.writeFileSync('./team.json', data);
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
         return error;
     }
@@ -45,5 +44,22 @@ function BuildTeam(message) {
     return team;
 }
 
+function ReadJsonTESTING() {
+    let team;
+    try {
+        const teamString = fs.readFileSync('./TESTteam.json');
+        team = JSON.parse(teamString);
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+    return team;
 
-module.exports = { WriteTeamToFile, BuildTeam }
+}
+
+
+module.exports = {
+    WriteTeamToFile,
+    BuildTeam,
+    ReadJsonTESTING
+}

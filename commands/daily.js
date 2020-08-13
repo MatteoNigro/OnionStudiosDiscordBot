@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const TeamManager = require('../TeamManager');
+const config = require('../config.json');
 
 module.exports = {
     name: 'daily',
@@ -12,21 +13,30 @@ module.exports = {
     guildOnly: true,
     execute(message, args, webSocket) {
 
-        const team = TeamManager.BuildTeam(message);
+        let team = [];
 
-        TeamManager.WriteTeamToFile(team);
+        if (config.TESTING == false) {
+            team = TeamManager.BuildTeam(message);
+            TeamManager.WriteTeamToFile(team);
+        }
+
 
         const link = webSocket.GenerateWebLink();
 
         const user = message.author.username;
         webSocket.messageRef = message;
-        webSocket.team = team;
 
-        team.forEach(member => {
-            if (member.name === user && member.roles.find(role => role === "Referente")) {
-                message.author.send("Non sei un referente, spero tu abbia una buona ragione per fare quello che stai per fare. Se non ce l'hai lascia perdere 👺");
-            }
-        })
+        if (config.TESTING == false) {
+            webSocket.team = team;
+            team.forEach(member => {
+                if (member.name === user && member.roles.find(role => role === "Referente")) {
+                    message.author.send("Non sei un referente, spero tu abbia una buona ragione per fare quello che stai per fare. Se non ce l'hai lascia perdere 👺");
+                }
+            })
+        } else {
+            webSocket.team = TeamManager.ReadJsonTESTING();
+        }
+
 
         const exampleEmbed = new Discord.MessageEmbed()
             .setColor('#0099ff')
@@ -38,4 +48,3 @@ module.exports = {
 
     }
 }
-

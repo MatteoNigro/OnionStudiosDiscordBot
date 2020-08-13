@@ -1,31 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
 
-*{
-    font-family: 'Roboto', sans-serif;
+* {
+  font-family: 'Roboto', sans-serif;
 }
 
-#title{
-    color: black;
-    text-align: center;
-    font-size: 4em;
+#title {
+  color: black;
+  text-align: center;
+  font-size: 4em;
 }
 
-#title, #departmentLabel, #dataLabel, #submitButton{
-   text-align: center;
-    
+#title,
+#departmentLabel,
+#dataLabel,
+#submitButton {
+  text-align: center;
+
 }
 
 .grid-container {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    background-color: #2196F3;
-    padding: 10px;
-  }
-  .grid-item {
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    font-size: 30px;
-    text-align: center;
-  }
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 10px;
+}
 
+.grid-item {
+  background-color: rgba(164, 169, 170, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+}
+
+.areastyle {
+  width: 600px;
+  height: 120px;
+  border: 3px solid #cccccc;
+  padding: 5px;
+  font-size: 18px;
+  resize: none;
+}

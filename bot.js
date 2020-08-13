@@ -1,6 +1,9 @@
 const fs = require('fs');
 const Discord = require("discord.js");
-const { prefix, token } = require("./config.json");
+const {
+  prefix,
+  token
+} = require("./config.json");
 const RWHelper = require('./ReadWriteHelper');
 const WebSocket = require('./WS/WebSocket');
 
@@ -130,4 +133,3 @@ function NotEnoughArguments(args, command) {
 function NoArguments(args, command) {
   return command.args && !args.length;
 }
-
