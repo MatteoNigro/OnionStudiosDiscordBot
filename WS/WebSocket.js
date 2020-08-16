@@ -2,6 +2,8 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const path = require('path');
+const Discord = require("discord.js");
+const config = require('../config.json');
 
 class WebSocket {
     constructor(token, port, client) {
@@ -11,6 +13,7 @@ class WebSocket {
 
         this.messageRef;
         this.team;
+        this.reviewChannelID;
 
         var hbs = exphbs.create({
             extname: 'hbs',
@@ -31,7 +34,9 @@ class WebSocket {
 
         this.app.use(express.static(path.join(__dirname, 'public')));
 
-        this.app.use(bodyParser.urlencoded({ extended: false }));
+        this.app.use(bodyParser.urlencoded({
+            extended: false
+        }));
         this.app.use(bodyParser.json());
 
         this.RegisterRoots();
@@ -55,7 +60,10 @@ class WebSocket {
         this.app.get('/', (req, res) => {
             var _token = req.query.token;
             if (!this.checkToken(_token)) {
-                res.render('error', { title: 'ERROR', errtype: 'INVALID TOKEN' });
+                res.render('error', {
+                    title: 'ERROR',
+                    errtype: 'INVALID TOKEN'
+                });
                 return;
             }
 
@@ -77,12 +85,7 @@ class WebSocket {
 
             this.team.forEach(member => {
                 if (user === member.name) {
-                    const memberRoles = [];
-                    member.roles.forEach(r => {
-                        if (r.startsWith('!')) {
-                            memberRoles.push(r);
-                        }
-                    });
+                    let memberRoles = this.GetRoles(member);
 
                     if (!memberRoles.length) {
                         error = true;
@@ -100,16 +103,15 @@ class WebSocket {
             });
 
             if (error) {
-                res.render('error', { title: 'ERROR', errtype: 'DEPARMENT PARAMETERS ARE NOT CORRECT' });
+                res.render('error', {
+                    title: 'ERROR',
+                    errtype: 'DEPARMENT PARAMETERS ARE NOT CORRECT'
+                });
                 return;
             }
 
             this.team.forEach(member => {
-                let roles = [];
-                member.roles.forEach(r => {
-                    if (r.startsWith('!'))
-                        roles.push(r);
-                })
+                let roles = this.GetRoles(member);
 
                 if (!roles.length) {
                     error = true;
@@ -127,52 +129,98 @@ class WebSocket {
 
             });
 
-            if (error) {
-                res.render('error', { title: 'ERROR', errtype: 'DEPARMENT PARAMETERS ARE NOT CORRECT' });
-                return;
-            }
-
             this.members = members;
 
+            if (error) {
+                res.render('error', {
+                    title: 'ERROR',
+                    errtype: 'DEPARTMENT PARAMETERS ARE NOT CORRECT'
+                });
+                return;
+            }
 
             res.render('index', {
                 title: 'discorBot Web Interface',
                 token: _token,
                 chans,
-                derpartment: dp,
+                department: dp,
                 members: members
 
             });
 
         });
 
-        // Other stuff
 
-        this.app.post('/sendMessage', (req, res) => {
-            var _token = req.body.token;
-            var text = req.body.text;
-            var channelid = req.body.channelid;
+        this.app.post('/sendReview', (req, res) => {
 
-            if (!this.checkToken(_token))
-                return;
+            const user = this.messageRef.author.username;
 
-            var chan = this.client.guilds.cache.first().channels.cache.get(channelid);
+            let department;
+            this.team.forEach(member => {
+                if (user === member.name) {
+                    let roles = this.GetRoles(member);
+                    department = roles.shift().slice(1);
+                }
+            });
 
-            if (chan) {
-                chan.send(text);
-            }
+            let reviewDate = req.body.reviewDate.split('-').reverse().join('/');
+
+            let webPageData = this.GetWebPageBodyReview(req);
+
+            const embed = new Discord.MessageEmbed()
+                .setTitle(`Daily Review: ${department} [${reviewDate}]`);
+
+            webPageData.forEach(memberData => {
+                embed.addField('\u200B', `__**${memberData.name}**__`)
+                    .addField('* Ultime 24 ore: ', memberData.last24)
+                    .addField('* Prossime 24 ore: ', memberData.next24)
+                    .addField('* Problematiche: ', memberData.issue)
+                    .addField('--------------------------------------------------------------------------------------------------', '\u200B');
+            });
+            embed.setTimestamp().setFooter(`Creata da: ${user}`);
+
+            const reviewChannel = this.client.guilds.cache.first().channels.cache.get(this.reviewChannelID);
+
+            if (reviewChannel)
+                reviewChannel.send(embed);
+
+            // TODO: Javascript front end data validation and handle exceed in character number in embeds
+
         });
+
+
     }
 
 
-    GetAllTextChannels() {
-        var chans = [];
-        this.client.guilds.cache.first().channels.cache
-            .filter(c => c.type == 'text')
-            .forEach(c => {
-                chans.push({ id: c.id, name: c.name });
-            });
-        return chans;
+    GetWebPageBodyReview(req) {
+        let data = [];
+        for (let i = 0; i < this.members.length; i++) {
+            const member = this.members[i];
+            const memberData = {
+                name: '',
+                last24: '',
+                next24: '',
+                issue: ''
+            };
+
+            memberData.name = member;
+            memberData.last24 = req.body['last24Area' + i];
+            memberData.next24 = req.body['next24Area' + i];
+            memberData.issue = req.body['issueArea' + i];
+
+            data.push(memberData);
+        }
+        return data;
+    }
+
+    GetRoles(member) {
+        const memberRoles = [];
+        member.roles.forEach(r => {
+            if (r.startsWith('!')) {
+                memberRoles.push(r);
+            }
+        });
+        return memberRoles;
     }
 
     GenerateWebLink() {

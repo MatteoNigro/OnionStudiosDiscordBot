@@ -1,11 +1,11 @@
 <iframe style="display: none;" name="dummyframe" id="dummyframe"></iframe>
-<form action="/sendMessage" method="POST" target="dummyframe">
+<form action="/sendReview" method="POST" target="dummyframe">
     <input type="hidden" name="token" value="{{token}}">
 
     <h1 id="title">Titolo</h1>
     <br>
 
-    <!-- Selezione del reparto -->
+    <!-- Reparto -->
     <div id="departmentLabel">
         <h3>{{department}}</h3>
     </div>
@@ -14,24 +14,24 @@
 
     <div id="dataLabel">
         <!-- Selezione della data -->
-        <label for="data">Data</label>
-        <input type="date" id="data">
+        <label for="dateInput">Data</label>
+        <input name="reviewDate" type="date" id="dateInput">
     </div>
 
     <br><br>
 
-    <!-- Effettive Daily Review di tutti i membri di quel reparto -->
+    <!-- Effettive Daily Review di tutti i membri del reparto -->
     <div class="grid-container">
         {{#each members as |member|}}
         <div class="grid-item">
             <h3 id="memberH{{@index}}">{{member}}</h3>
             <div id="memberQ{{@index}}">
                 <h5>Cosa hai fatto nelle ultime 24 ore?</h5>
-                <textarea class="areastyle" onfocus="this.value=''">Scrivi qui</textarea>
+                <textarea name="last24Area{{@index}}" class="areastyle" placeholder="Scrivi qui"></textarea>
                 <h5>Cosa farai nelle prossime 24 ore?</h5>
-                <textarea class="areastyle" onfocus="this.value=''">Scrivi qui</textarea>
+                <textarea name="next24Area{{@index}}" class="areastyle" placeholder="Scrivi qui"></textarea>
                 <h5>Che problematiche stai affrontando?</h5>
-                <textarea class="areastyle" onfocus="this.value=''">Scrivi qui</textarea>
+                <textarea name="issueArea{{@index}}" class="areastyle" placeholder="Scrivi qui"></textarea>
             </div>
         </div>
         {{/each}}
@@ -41,58 +41,8 @@
     <br>
 
 
-    <div id="submitButton">
+    <div id=" submitButton">
         <input type="submit" value="Completa Daily Review">
     </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-
-
-    <select name="channelid">
-        {{#each chans}}
-        <option value="{{this.id}}">{{this.name}}</option>
-        {{/each}}
-    </select>
-    <input type="text" name="text" placeholder="MESSAGE TEXT">
-    <input type="submit" value="SEND">
 </form>

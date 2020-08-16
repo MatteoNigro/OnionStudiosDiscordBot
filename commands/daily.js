@@ -32,19 +32,34 @@ module.exports = {
                 if (member.name === user && member.roles.find(role => role === "Referente")) {
                     message.author.send("Non sei un referente, spero tu abbia una buona ragione per fare quello che stai per fare. Se non ce l'hai lascia perdere 👺");
                 }
-            })
+            });
         } else {
             webSocket.team = TeamManager.ReadJsonTESTING();
         }
 
+        var channels = [];
+        webSocket.client.guilds.cache.first().channels.cache
+            .filter(c => c.type == 'text' && c.name == config.defaultChannel)
+            .forEach(c => {
+                channels.push(c.id);
+            });
 
-        const exampleEmbed = new Discord.MessageEmbed()
+        if (!channels)
+            return message.author.send(`Non sono presenti canali testuali con il nome ${config.defaultChannel}! Sistema o, se non puoi, contatta subito chi ha i permessi per farlo`);
+
+        if (channels.length > 1)
+            return message.author.send(`Ci sono multipli canali testuali con il nome ${config.defaultChannel}! Sistema o, se non puoi, contatta subito chi ha i permessi per farlo`);
+
+        webSocket.reviewChannelID = channels.shift();
+
+
+        const embed = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle('Web Link')
             .setURL(link);
 
 
-        message.author.send(exampleEmbed);
+        message.author.send(embed);
 
     }
 }

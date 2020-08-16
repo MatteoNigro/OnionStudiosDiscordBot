@@ -60,5 +60,3 @@ member4.onmousedown = function () {
     div.style.display == "none" ? div.style.display = "block" : div.style.display = "none";
 }*/
 //#endregion
-
-

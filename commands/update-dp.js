@@ -1,5 +1,5 @@
 const TeamManager = require("../TeamManager");
-
+const config = require('../config.json');
 module.exports = {
     name: 'update-dp',
     description: 'Aggiorna lo stato dei dipartimenti e dei relativi membri',
@@ -11,15 +11,17 @@ module.exports = {
     guildOnly: true,
     execute(message, args, webSocket) {
 
-        const team = TeamManager.BuildTeam(message);
+        let team = [];
 
-        TeamManager.WriteTeamToFile(team);
-
-        webSocket.team = team;
+        if (config.TESTING == false) {
+            team = TeamManager.BuildTeam(message);
+            TeamManager.WriteTeamToFile(team);
+            webSocket.team = team;
+        } else {
+            webSocket.team = TeamManager.ReadJsonTESTING();
+        }
 
         message.channel.send("Aggiornamento database Team completato 👌😁👌");
 
     }
 }
-
-
