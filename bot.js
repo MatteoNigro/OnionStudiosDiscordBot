@@ -26,7 +26,11 @@ client.once("ready", () => {
 
 client.on("message", (message) => {
 
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
+  if (message.author.bot) return;
+  if (!message.content.startsWith(prefix)) {
+    DeleteMessage(message);
+    return;
+  }
 
   const args = message.content.slice(prefix.length).split(/ +/);
   const commandName = args.shift().toLowerCase();
@@ -60,6 +64,8 @@ client.on("message", (message) => {
   if (!cooldowns.has(command.name)) {
     cooldowns.set(command.name, new Discord.Collection());
   }
+
+  DeleteMessage(message);
 
   //#region COOLDOWN SETUP
 
@@ -111,8 +117,13 @@ client.on("message", (message) => {
 
 client.login(token);
 
-
 // ======================================================== FUNCTIONS ================================================================
+
+function DeleteMessage(message) {
+  message.delete({
+    timeout: 10000
+  }).catch(console.error);
+}
 
 function AddUsageIfAvailable(command, reply) {
   if (command.usage) {

@@ -2,7 +2,7 @@
 <form action="/sendReview" method="POST" target="dummyframe">
     <input type="hidden" name="token" value="{{token}}">
 
-    <h1 id="title">Titolo</h1>
+    <h1 id="title">Daily Review</h1>
     <br>
 
     <!-- Reparto -->
@@ -15,7 +15,7 @@
     <div id="dataLabel">
         <!-- Selezione della data -->
         <label for="dateInput">Data</label>
-        <input name="reviewDate" type="date" id="dateInput">
+        <input name="reviewDate" type="date" id="dateInput" required>
     </div>
 
     <br><br>
@@ -27,11 +27,14 @@
             <h3 id="memberH{{@index}}">{{member}}</h3>
             <div id="memberQ{{@index}}">
                 <h5>Cosa hai fatto nelle ultime 24 ore?</h5>
-                <textarea name="last24Area{{@index}}" class="areastyle" placeholder="Scrivi qui"></textarea>
+                <textarea name="last24Area{{@index}}" class="areastyle" placeholder="Scrivi qui" maxlength="350"
+                    required></textarea>
                 <h5>Cosa farai nelle prossime 24 ore?</h5>
-                <textarea name="next24Area{{@index}}" class="areastyle" placeholder="Scrivi qui"></textarea>
+                <textarea name="next24Area{{@index}}" class="areastyle" placeholder="Scrivi qui" maxlength="350"
+                    required></textarea>
                 <h5>Che problematiche stai affrontando?</h5>
-                <textarea name="issueArea{{@index}}" class="areastyle" placeholder="Scrivi qui"></textarea>
+                <textarea name="issueArea{{@index}}" class="areastyle" placeholder="Scrivi qui" maxlength="350"
+                    required></textarea>
             </div>
         </div>
         {{/each}}

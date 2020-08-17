@@ -67,8 +67,6 @@ class WebSocket {
                 return;
             }
 
-            var chans = this.GetAllTextChannels();
-
             if (!this.messageRef)
                 return;
 
@@ -128,7 +126,6 @@ class WebSocket {
                     members.push(member.name);
 
             });
-
             this.members = members;
 
             if (error) {
@@ -142,10 +139,8 @@ class WebSocket {
             res.render('index', {
                 title: 'discorBot Web Interface',
                 token: _token,
-                chans,
                 department: dp,
-                members: members
-
+                members: members,
             });
 
         });
@@ -165,6 +160,8 @@ class WebSocket {
 
             let reviewDate = req.body.reviewDate.split('-').reverse().join('/');
 
+            // TODO: ricerca messaggi nel canale e controllo di review già fatta
+
             let webPageData = this.GetWebPageBodyReview(req);
 
             const embed = new Discord.MessageEmbed()
@@ -174,8 +171,7 @@ class WebSocket {
                 embed.addField('\u200B', `__**${memberData.name}**__`)
                     .addField('* Ultime 24 ore: ', memberData.last24)
                     .addField('* Prossime 24 ore: ', memberData.next24)
-                    .addField('* Problematiche: ', memberData.issue)
-                    .addField('--------------------------------------------------------------------------------------------------', '\u200B');
+                    .addField('* Problematiche: ', memberData.issue);
             });
             embed.setTimestamp().setFooter(`Creata da: ${user}`);
 
@@ -184,7 +180,6 @@ class WebSocket {
             if (reviewChannel)
                 reviewChannel.send(embed);
 
-            // TODO: Javascript front end data validation and handle exceed in character number in embeds
 
         });
 
