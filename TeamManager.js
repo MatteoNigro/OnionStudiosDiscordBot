@@ -12,7 +12,7 @@ function WriteTeamToFile(team) {
         fs.writeFileSync('./team.json', data);
     } catch (error) {
         console.error(error);
-        return error;
+        return;
     }
 }
 
@@ -44,6 +44,36 @@ function BuildTeam(message) {
     return team;
 }
 
+function GetWrittenReviewDates() {
+    let actualDates = [];
+    try {
+        const stringDates = fs.readFileSync('./reviews.json');
+        if (!isEmpty(stringDates))
+            actualDates = JSON.parse(stringDates);
+    } catch (error) {
+        console.log(error);
+        return;
+    }
+    return actualDates;
+}
+
+function WriteDateReviewToFile(reviewDate) {
+    if (!reviewDate)
+        return console.log('C\'è un problema con il reperimento della data dal front end');
+
+    let allDates = [];
+    allDates = GetWrittenReviewDates();
+    allDates.push(reviewDate);
+
+    try {
+        const data = JSON.stringify(allDates, null);
+        fs.writeFileSync('./reviews.json', data);
+    } catch (error) {
+        console.log(error);
+        return;
+    }
+}
+
 function ReadJsonTESTING() {
     let team;
     try {
@@ -57,9 +87,15 @@ function ReadJsonTESTING() {
 
 }
 
+function isEmpty(obj) {
+    return !Object.keys(obj).length;
+}
+
 
 module.exports = {
     WriteTeamToFile,
     BuildTeam,
-    ReadJsonTESTING
+    ReadJsonTESTING,
+    GetWrittenReviewDates,
+    WriteDateReviewToFile
 }

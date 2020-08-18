@@ -3,7 +3,7 @@ const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const path = require('path');
 const Discord = require("discord.js");
-const config = require('../config.json');
+const TeamManager = require('../TeamManager');
 
 class WebSocket {
     constructor(token, port, client) {
@@ -71,7 +71,7 @@ class WebSocket {
                 return;
 
 
-            let error = false;
+            let discordRolesProblems = false;
             const user = this.messageRef.author.username;
             let dp = ' ';
             let members = [];
@@ -86,12 +86,12 @@ class WebSocket {
                     let memberRoles = this.GetRoles(member);
 
                     if (!memberRoles.length) {
-                        error = true;
+                        discordRolesProblems = true;
                         this.messageRef.author.send("L'utente che sta cercando di effettuare la review non fa parte di nessun dipartimento, oppure il nome del ruolo non possiede il prefisso necessario");
                         return;
                     }
                     if (memberRoles.length > 1) {
-                        error = true;
+                        discordRolesProblems = true;
                         this.messageRef.author.send("L'utente che sta cercando di effettuare la review risiede in più di un dipartimento! Sistemare i ruoli prima di continuare");
                         return;
                     }
@@ -100,7 +100,7 @@ class WebSocket {
                 }
             });
 
-            if (error) {
+            if (discordRolesProblems) {
                 res.render('error', {
                     title: 'ERROR',
                     errtype: 'DEPARMENT PARAMETERS ARE NOT CORRECT'
@@ -112,12 +112,12 @@ class WebSocket {
                 let roles = this.GetRoles(member);
 
                 if (!roles.length) {
-                    error = true;
+                    discordRolesProblems = true;
                     this.messageRef.author.send(`Il membro ${member.name} non appartiene a nessun reparto controllare e sistemare prima di procedere`);
                     return;
                 }
                 if (roles.length > 1) {
-                    error = true;
+                    discordRolesProblems = true;
                     this.messageRef.author.send(`Il membro ${member.name} risiede in più dipartimenti contemporaneamente! Sistemare i ruoli prima di procedere`);
                     return;
                 }
@@ -128,7 +128,7 @@ class WebSocket {
             });
             this.members = members;
 
-            if (error) {
+            if (discordRolesProblems) {
                 res.render('error', {
                     title: 'ERROR',
                     errtype: 'DEPARTMENT PARAMETERS ARE NOT CORRECT'
@@ -149,6 +149,8 @@ class WebSocket {
         this.app.post('/sendReview', (req, res) => {
 
             const user = this.messageRef.author.username;
+            const reviewChannel = this.client.guilds.cache.first().channels.cache.get(this.reviewChannelID);
+            let reviewAlreadyDone = false;
 
             let department;
             this.team.forEach(member => {
@@ -160,7 +162,20 @@ class WebSocket {
 
             let reviewDate = req.body.reviewDate.split('-').reverse().join('/');
 
-            // TODO: ricerca messaggi nel canale e controllo di review già fatta
+            const reviewDates = TeamManager.GetWrittenReviewDates();
+            reviewDates.forEach(date => {
+                if (reviewDate === date) {
+                    reviewAlreadyDone = true;
+                    this.messageRef.author.send(`La daily review in data ${date} è già stata effettuata`);
+                    return;
+                }
+            });
+
+            if (reviewAlreadyDone)
+                return;
+
+            TeamManager.WriteDateReviewToFile(reviewDate);
+
 
             let webPageData = this.GetWebPageBodyReview(req);
 
@@ -175,15 +190,11 @@ class WebSocket {
             });
             embed.setTimestamp().setFooter(`Creata da: ${user}`);
 
-            const reviewChannel = this.client.guilds.cache.first().channels.cache.get(this.reviewChannelID);
 
             if (reviewChannel)
                 reviewChannel.send(embed);
 
-
         });
-
-
     }
 
 
