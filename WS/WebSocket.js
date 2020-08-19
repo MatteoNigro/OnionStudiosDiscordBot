@@ -4,6 +4,9 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const Discord = require("discord.js");
 const TeamManager = require('../TeamManager');
+const {
+    runInThisContext
+} = require('vm');
 
 class WebSocket {
     constructor(token, port, client) {
@@ -145,6 +148,11 @@ class WebSocket {
 
         });
 
+        this.app.get('/sendReview', (req, res) => {
+            res.render('sendReview', {
+                title: 'Review Completed'
+            });
+        });
 
         this.app.post('/sendReview', (req, res) => {
 
@@ -160,6 +168,19 @@ class WebSocket {
                 }
             });
 
+            // TODO: Rivedere l'intera sezione della gestione delle date utilizzando moment.js (da installare via npm)
+
+            // YYY/MM/DD
+            const date = req.body.reviewDate;
+
+            // Epoch Date Format
+            const comparableDate = new Date(date)
+            const todayDate = Date.now();
+            todayDate.setHours(0, 0, 0, 0);
+            console.log(Date.parse(comparableDate));
+            console.log(todayDate);
+
+            // DD/MM/YYY
             let reviewDate = req.body.reviewDate.split('-').reverse().join('/');
 
             const reviewDates = TeamManager.GetWrittenReviewDates();
@@ -193,6 +214,8 @@ class WebSocket {
 
             if (reviewChannel)
                 reviewChannel.send(embed);
+
+            res.redirect('/sendReview');
 
         });
     }
