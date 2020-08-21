@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const TeamManager = require('../TeamManager');
 const config = require('../config.json');
+const ReviewChannelManager = require('../ReviewChannelManager');
 
 module.exports = {
     name: 'daily',
@@ -37,19 +38,7 @@ module.exports = {
             webSocket.team = TeamManager.ReadJsonTESTING();
         }
 
-        var channels = [];
-        webSocket.client.guilds.cache.first().channels.cache
-            .filter(c => c.type == 'text' && c.name == config.defaultChannel)
-            .forEach(c => {
-                channels.push(c.id);
-            });
-
-        if (!channels)
-            return message.author.send(`Non sono presenti canali testuali con il nome ${config.defaultChannel}! Sistema o, se non puoi, contatta subito chi ha i permessi per farlo`);
-
-        if (channels.length > 1)
-            return message.author.send(`Ci sono multipli canali testuali con il nome ${config.defaultChannel}! Sistema o, se non puoi, contatta subito chi ha i permessi per farlo`);
-
+        const channels = ReviewChannelManager.GetReviewChannelID(webSocket, message);
         webSocket.reviewChannelID = channels.shift();
 
 
