@@ -1,4 +1,5 @@
 const ReviewChannelManager = require('../ReviewChannelManager');
+const moment = require('moment');
 
 module.exports = {
     name: 'delreview',
@@ -14,6 +15,17 @@ module.exports = {
         const reviewChannel = message.client.guilds.cache.first().channels.cache.get(reviewChannelID);
         const lastMessage = reviewChannel.lastMessage;
 
+        const dateArg = args.shift();
+        const readableDate = dateArg.split('/').reverse().join('-');
+
+        const dateToDelete = moment(readableDate).format("DD[/]MM[/]YYYY");
+
+        if (dateArg != dateToDelete) {
+            message.author.send('La data da te inserita non è nel formato corretto e potrebbero esserci errori.');
+            return;
+        }
+        // TODO: Delete this return below and search and destroy the daily review with that precise date.
+        return;
         let lastMessageFound = lastMessage;
 
         while (lastMessageFound !== (lastMessageFound = await logReturnLast(reviewChannel, {
@@ -22,39 +34,6 @@ module.exports = {
             }, lastMessageFound))) {
             // EMPTY BODY
         }
-
-        new Promise((resolve, reject) => {
-            setTimeout(() => resolve(''), 2000);
-        }).then(() => {
-            setTimeout(() => resolve(''), 2000);
-            console.log('Comincio la ricerca...');
-        }).then(() => {
-            setTimeout(() => resolve(''), 2000);
-            console.log('Speriamo non ci voglia tanto');
-        }).then(() => {
-            setTimeout(() => resolve(''), 2000);
-            console.log('Ma quanto cazzo devo andare indietro per trovarla ooooooh');
-        }).then(() => {
-            setTimeout(() => resolve(''), 2000);
-            console.log('Mi prendi per il culo?');
-        }).then(() => {
-            setTimeout(() => resolve(''), 2000);
-            console.log('3');
-        }).then(() => {
-            setTimeout(() => resolve(''), 1000);
-            console.log('2');
-        }).then(() => {
-            setTimeout(() => resolve(''), 1000);
-            console.log('1');
-        }).then(() => {
-            setTimeout(() => resolve(''), 2000);
-            console.log('Trovata!');
-        }).then(() => {
-            setTimeout(() => resolve(''), 2000);
-            console.log('No scherzo, continuo la ricerca...');
-        });
-
-        // TODO: Usare una variabile booleana per identificare il momento in cui la funzione asincrona ha trovato la review da eliminare e porlo come condizione di terminazione del while della chain di Promise. Da provare per lo meno.
 
     }
 }
@@ -82,9 +61,4 @@ async function logReturnLast(chan, option, prevMsg) {
             return last;
         })
         .catch(err => console.log('ERR>>', err));
-}
-
-function logJoke(string) {
-    console.log(string);
-    return Promise.resolve();
 }
