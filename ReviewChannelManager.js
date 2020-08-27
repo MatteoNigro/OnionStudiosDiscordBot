@@ -16,6 +16,38 @@ function GetReviewChannelID(webSocket, message) {
     return channels;
 }
 
+function GetWrittenReviewDates() {
+    let actualDates = [];
+    try {
+        const stringDates = fs.readFileSync('./reviews.json');
+        if (!isEmpty(stringDates))
+            actualDates = JSON.parse(stringDates);
+    } catch (error) {
+        console.log(error);
+        return;
+    }
+    return actualDates;
+}
+
+function WriteDateReviewToFile(reviewDate) {
+    if (!reviewDate)
+        return console.log('C\'è un problema con il reperimento della data dal front end');
+
+    let allDates = [];
+    allDates = GetWrittenReviewDates();
+    allDates.push(reviewDate);
+
+    try {
+        const data = JSON.stringify(allDates, null);
+        fs.writeFileSync('./reviews.json', data);
+    } catch (error) {
+        console.log(error);
+        return;
+    }
+}
+
 module.exports = {
-    GetReviewChannelID
+    GetReviewChannelID,
+    GetWrittenReviewDates,
+    WriteDateReviewToFile
 }

@@ -4,7 +4,6 @@ const {
   prefix,
   token
 } = require("./config.json");
-const RWHelper = require('./ReadWriteHelper');
 const WebSocket = require('./WS/WebSocket');
 
 const client = new Discord.Client();

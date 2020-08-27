@@ -1,5 +1,6 @@
 const ReviewChannelManager = require('../ReviewChannelManager');
 const moment = require('moment');
+const ReviewDatesManager = require('../ReviewDatesManager');
 
 module.exports = {
     name: 'delreview',
@@ -24,41 +25,77 @@ module.exports = {
             message.author.send('La data da te inserita non è nel formato corretto e potrebbero esserci errori.');
             return;
         }
-        // TODO: Delete this return below and search and destroy the daily review with that precise date.
-        return;
+
+        const dailyAlreadyDone = ReviewDatesManager.GetWrittenReviewDates();
+        const foundCheck = dailyAlreadyDone.indexOf(dateToDelete);
+        if (foundCheck < 0) {
+            message.author.send(`La review in data ${dateToDelete} che stai cercando di eliminare non è mai stata fatta, quindi non c'è un cazzo da eliminare 😃`);
+            return;
+        }
+
         let lastMessageFound = lastMessage;
+
+        message.author.send(`Sto cercando la daily review in data ${dateToDelete} ... \nLa durata della ricerca dipende da quanto è vecchia la review, nel caso ci vorrà un po \nNel frattempo puoi comunque eseguire altre operazioni che non dipendono da questa.`);
 
         while (lastMessageFound !== (lastMessageFound = await logReturnLast(reviewChannel, {
                 limit: 2,
                 before: lastMessageFound.id
-            }, lastMessageFound))) {
-            // EMPTY BODY
+            }, lastMessageFound, dateToDelete))) {
+
+            if (dailyReviewFound) {
+                const dates = ReviewDatesManager.GetWrittenReviewDates();
+                const index = dates.indexOf(dateToDelete);
+                if (index > -1) {
+                    dates.splice(index, 1);
+                    ReviewDatesManager.WriteAllDateReviewsToFile(dates);
+                    message.author.send(`Trovata! La review in data ${dateToDelete} è stata eliminata dalla lista`);
+                    break;
+                }
+                message.author.send(`Qualcosa è andato storto, contattare l'assistenza indipendentemente dalla riuscita o meno dell'operazione`);
+                break;
+            }
         }
 
     }
 }
 
+let dailyReviewFound = false;
+
 // ===================================== FUNCTIONS ==============================================
 
-async function logReturnLast(chan, option, prevMsg) {
+async function logReturnLast(chan, option, prevMsg, dateToDelete) {
     return chan.messages.fetch(option)
         .then(async msgs => {
             if (msgs.size === 0) {
-                if (prevMsg.embeds.length != 0)
-                    console.log(prevMsg.embeds[0].title);
-                else
-                    console.log(prevMsg.content);
+                if (prevMsg.embeds.length != 0) {
+                    const dailyDate = extractDateFromEmbed(prevMsg);
+                    if (dailyDate === dateToDelete) {
+                        prevMsg.delete().then(() => console.log(`Review in date ${dailyDate} deleted from Discord chat`));
+                        dailyReviewFound = true;
+
+                    }
+                }
                 return prevMsg;
             }
             let last = msgs.last();
             for (const [id, msg] of msgs) {
                 let tmp = (id === last.id) ? prevMsg : msg;
-                if (tmp.embeds.length != 0)
-                    console.log(tmp.embeds[0].title);
-                else
-                    console.log(tmp.content);
+                if (tmp.embeds.length != 0) {
+                    const dailyDate = extractDateFromEmbed(tmp);
+                    if (dailyDate === dateToDelete) {
+                        tmp.delete().then(() => console.log(`Review in date ${dailyDate} deleted from Discord chat`));
+                        dailyReviewFound = true;
+                    }
+                }
             }
             return last;
         })
         .catch(err => console.log('ERR>>', err));
+}
+
+function extractDateFromEmbed(tmp) {
+    const embedTitle = tmp.embeds[0].title;
+    const titleArray = embedTitle.split(' ');
+    const dailyDate = titleArray.pop().replace('[', '').replace(']', '');
+    return dailyDate;
 }

@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const Discord = require("discord.js");
 const TeamManager = require('../TeamManager');
+const ReviewDatesManager = require('../ReviewDatesManager');
 const moment = require('moment');
 
 class WebSocket {
@@ -156,6 +157,10 @@ class WebSocket {
 
             const user = this.messageRef.author.username;
             const reviewChannel = this.client.guilds.cache.first().channels.cache.get(this.reviewChannelID);
+            if (!reviewChannel) {
+                this.messageRef.author.send(`📛📛 C'è un problema riguardo alla reference con il canale in cui vengono fatte le daily review. Contattare subito l'assistenza! 📛📛`);
+                return;
+            }
             let reviewAlreadyDone = false;
 
             let department;
@@ -180,7 +185,7 @@ class WebSocket {
             // DD/MM/YYY
             let reviewDate = date.format("DD[/]MM[/]YYYY");
 
-            const reviewDates = TeamManager.GetWrittenReviewDates();
+            const reviewDates = ReviewDatesManager.GetWrittenReviewDates();
             reviewDates.forEach(date => {
                 if (reviewDate === date) {
                     reviewAlreadyDone = true;
@@ -192,8 +197,7 @@ class WebSocket {
             if (reviewAlreadyDone)
                 return;
 
-            TeamManager.WriteDateReviewToFile(reviewDate);
-
+            ReviewDatesManager.WriteOneDateReviewToFile(reviewDate);
 
             let webPageData = this.GetWebPageBodyReview(req);
 
