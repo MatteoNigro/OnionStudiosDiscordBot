@@ -33,6 +33,10 @@ module.exports = {
             return;
         }
 
+        // TODO: SUPER DUPER IMPORTANT --> make the review.js file store and array of objects where the first attribute is the department and the second is the date and update all check in the code to include the department.
+
+        // TODO: ONLY AFTER THE ABOVE --> Create the timer feature to keep track of the time between reviews.
+
         let lastMessageFound = lastMessage;
 
         message.author.send(`Sto cercando la daily review in data ${dateToDelete} ... \nLa durata della ricerca dipende da quanto è vecchia la review, nel caso ci vorrà un po \nNel frattempo puoi comunque eseguire altre operazioni che non dipendono da questa.`);
