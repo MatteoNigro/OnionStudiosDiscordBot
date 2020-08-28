@@ -21,7 +21,7 @@ module.exports = {
             webSocket.team = TeamManager.ReadJsonTESTING();
         }
 
-        message.channel.send("Aggiornamento database Team completato 👌😁👌");
+        message.author.send("Aggiornamento database Team completato 👌😁👌");
 
     }
 }

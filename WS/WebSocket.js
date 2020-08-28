@@ -6,6 +6,8 @@ const Discord = require("discord.js");
 const TeamManager = require('../TeamManager');
 const ReviewDatesManager = require('../ReviewDatesManager');
 const moment = require('moment');
+const momentTimer = require('moment-timer');
+
 
 class WebSocket {
     constructor(token, port, client) {
@@ -105,7 +107,7 @@ class WebSocket {
             if (discordRolesProblems) {
                 res.render('error', {
                     title: 'ERROR',
-                    errtype: 'DEPARMENT PARAMETERS ARE NOT CORRECT'
+                    errtype: '😱😱 DEPARMENT PARAMETERS ARE NOT CORRECT 😱😱'
                 });
                 return;
             }
@@ -186,10 +188,10 @@ class WebSocket {
             let reviewDate = date.format("DD[/]MM[/]YYYY");
 
             const reviewDates = ReviewDatesManager.GetWrittenReviewDates();
-            reviewDates.forEach(date => {
-                if (reviewDate === date) {
+            reviewDates.forEach(obj => {
+                if (reviewDate === obj.date && department === obj.department) {
                     reviewAlreadyDone = true;
-                    this.messageRef.author.send(`La daily review in data ${date} è già stata effettuata`);
+                    this.messageRef.author.send(`La daily review in data ${obj.date} è già stata effettuata`);
                     return;
                 }
             });
@@ -197,12 +199,17 @@ class WebSocket {
             if (reviewAlreadyDone)
                 return;
 
-            ReviewDatesManager.WriteOneDateReviewToFile(reviewDate);
+            const dailyReviewElement = {
+                date: reviewDate,
+                department: department
+            };
+
+            ReviewDatesManager.WriteOneDateReviewToFile(dailyReviewElement);
 
             let webPageData = this.GetWebPageBodyReview(req);
 
             const embed = new Discord.MessageEmbed()
-                .setTitle(`Daily Review: ${department} [${reviewDate}]`);
+                .setTitle(`Daily Review: ${dailyReviewElement.department} [${dailyReviewElement.date}]`);
 
             webPageData.forEach(memberData => {
                 embed.addField('\u200B', `__**${memberData.name}**__`)
@@ -215,6 +222,31 @@ class WebSocket {
 
             if (reviewChannel)
                 reviewChannel.send(embed);
+
+
+            // Notification System Started
+
+            // Set the last review date for the user
+            const team = TeamManager.GetJsonTeam();
+            team.forEach(member => {
+                let roles = this.GetRoles(member);
+                if (member.name === user && roles.shift().slice(1) === dailyReviewElement.department)
+                    member.lastReviewDate = dailyReviewElement.date;
+            });
+            TeamManager.WriteTeamToFile(team);
+
+
+            // TODO: Set Up a date review json file in which you are stored object with the date of the last review and the respective department. Delete the last review date property form the team json file. Then check if a fixed hour in the next day from that last review date has passed and notify via direct message.
+
+            // The timer Starts
+            let timer = new moment.duration(15, 'seconds').timer(() => {
+                console.log('Timer Ended');
+            });
+            timer.start();
+
+
+
+
 
             res.redirect('/sendReview');
 

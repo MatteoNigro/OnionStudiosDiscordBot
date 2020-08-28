@@ -23,7 +23,8 @@ function BuildTeam(message) {
         let singleMember = {
             name: ' ',
             roles: [],
-            id: ' '
+            id: ' ',
+            lastReviewDate: ' '
         };
 
         if (member.user.bot) {
@@ -44,6 +45,18 @@ function BuildTeam(message) {
     return team;
 }
 
+function GetJsonTeam() {
+    let team;
+    try {
+        const teamString = fs.readFileSync('./team.json');
+        team = JSON.parse(teamString);
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+    return team;
+}
+
 function ReadJsonTESTING() {
     let team;
     try {
@@ -61,5 +74,6 @@ function ReadJsonTESTING() {
 module.exports = {
     WriteTeamToFile,
     BuildTeam,
-    ReadJsonTESTING
+    ReadJsonTESTING,
+    GetJsonTeam
 }
