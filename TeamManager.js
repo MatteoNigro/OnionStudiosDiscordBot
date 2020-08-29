@@ -23,8 +23,7 @@ function BuildTeam(message) {
         let singleMember = {
             name: ' ',
             roles: [],
-            id: ' ',
-            lastReviewDate: ' '
+            id: ' '
         };
 
         if (member.user.bot) {

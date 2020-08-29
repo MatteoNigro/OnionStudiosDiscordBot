@@ -7,6 +7,7 @@ const TeamManager = require('../TeamManager');
 const ReviewDatesManager = require('../ReviewDatesManager');
 const moment = require('moment');
 const momentTimer = require('moment-timer');
+const Timer = require('../Timer');
 
 
 class WebSocket {
@@ -18,6 +19,7 @@ class WebSocket {
         this.messageRef;
         this.team;
         this.reviewChannelID;
+        this.timers = [];
 
         var hbs = exphbs.create({
             extname: 'hbs',
@@ -199,17 +201,13 @@ class WebSocket {
             if (reviewAlreadyDone)
                 return;
 
-            const dailyReviewElement = {
-                date: reviewDate,
-                department: department
-            };
 
-            ReviewDatesManager.WriteOneDateReviewToFile(dailyReviewElement);
+            ReviewDatesManager.WriteOneDateReviewToFile(reviewDate);
 
             let webPageData = this.GetWebPageBodyReview(req);
 
             const embed = new Discord.MessageEmbed()
-                .setTitle(`Daily Review: ${dailyReviewElement.department} [${dailyReviewElement.date}]`);
+                .setTitle(`Daily Review: ${department} [${reviewDate}]`);
 
             webPageData.forEach(memberData => {
                 embed.addField('\u200B', `__**${memberData.name}**__`)
@@ -230,19 +228,17 @@ class WebSocket {
             const team = TeamManager.GetJsonTeam();
             team.forEach(member => {
                 let roles = this.GetRoles(member);
-                if (member.name === user && roles.shift().slice(1) === dailyReviewElement.department)
-                    member.lastReviewDate = dailyReviewElement.date;
+                if (member.name === user && roles.shift().slice(1) === department)
+                    member.lastReviewDate = reviewDate;
             });
             TeamManager.WriteTeamToFile(team);
 
 
-            // TODO: Set Up a date review json file in which you are stored object with the date of the last review and the respective department. Delete the last review date property form the team json file. Then check if a fixed hour in the next day from that last review date has passed and notify via direct message.
+            // TODO: Created an array of timers to store them for each department, i have to create the validation for which the timer stop when a certain amount of time is passed. Every time a member makes a daily review a personal timer starts checking if the date of the review is equal to the moment now plus a day at eleven o'clock in the evening. Also every time a review is completed a check on the timers variable is made to assure that there are not multiple instances of the same timer for the same department 
 
-            // The timer Starts
-            let timer = new moment.duration(15, 'seconds').timer(() => {
-                console.log('Timer Ended');
-            });
-            timer.start();
+            let timer = new Timer(department, reviewDate);
+
+            this.timers.push(timer);
 
 
 
