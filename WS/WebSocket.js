@@ -234,7 +234,11 @@ class WebSocket {
 
             // TODO: Created an array of timers to store them for each department, i have to create the validation for which the timer stop when a certain amount of time is passed. Every time a member makes a daily review a personal timer starts checking if the date of the review is equal to the moment now plus a day at eleven o'clock in the evening. Also every time a review is completed a check on the timers variable is made to assure that there are not multiple instances of the same timer for the same department. 
 
-            let timer = new Timer(dailyReviewElement.department, dailyReviewElement.date);
+            // CHeck error on daily.js for !Referente roles cause that check doesn't work.
+
+            // P.S. Avoid all this timer thing when a member is modifying an old review with a flag or something like that
+
+            let timer = new Timer(dailyReviewElement.department, dailyReviewElement.date, this.client);
 
             this.timers.push(timer);
 

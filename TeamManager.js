@@ -75,11 +75,11 @@ function GetDepartmentLeader(department) {
     team.forEach(member => {
         const memberRoles = GetRoles(member);
         memberRoles.forEach(r => {
-            if (r === 'Referente')
+            if (r === `${dpPrefix}Referente`)
                 leaders.push(member);
         });
     });
-    const lead;
+    const lead = '';
     leaders.forEach(leader => {
         const leaderRoles = GetRoles(leader);
         leaderRoles.forEach(r => {
