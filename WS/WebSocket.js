@@ -89,7 +89,7 @@ class WebSocket {
 
             this.team.forEach(member => {
                 if (user === member.name) {
-                    let memberRoles = this.GetRoles(member);
+                    let memberRoles = this.GetDepartmentRoles(member);
 
                     if (!memberRoles.length) {
                         discordRolesProblems = true;
@@ -115,7 +115,7 @@ class WebSocket {
             }
 
             this.team.forEach(member => {
-                let roles = this.GetRoles(member);
+                let roles = this.GetDepartmentRoles(member);
 
                 if (!roles.length) {
                     discordRolesProblems = true;
@@ -170,7 +170,7 @@ class WebSocket {
             let department;
             this.team.forEach(member => {
                 if (user === member.name) {
-                    let roles = this.GetRoles(member);
+                    let roles = this.GetDepartmentRoles(member);
                     department = roles.shift().slice(1);
                 }
             });
@@ -201,13 +201,18 @@ class WebSocket {
             if (reviewAlreadyDone)
                 return;
 
+            const dailyReviewElement = {
+                date: reviewDate,
+                department: department
+            };
 
-            ReviewDatesManager.WriteOneDateReviewToFile(reviewDate);
+
+            ReviewDatesManager.WriteOneDateReviewToFile(dailyReviewElement);
 
             let webPageData = this.GetWebPageBodyReview(req);
 
             const embed = new Discord.MessageEmbed()
-                .setTitle(`Daily Review: ${department} [${reviewDate}]`);
+                .setTitle(`Daily Review: ${dailyReviewElement.department} [${dailyReviewElement.date}]`);
 
             webPageData.forEach(memberData => {
                 embed.addField('\u200B', `__**${memberData.name}**__`)
@@ -224,19 +229,12 @@ class WebSocket {
 
             // Notification System Started
 
-            // Set the last review date for the user
-            const team = TeamManager.GetJsonTeam();
-            team.forEach(member => {
-                let roles = this.GetRoles(member);
-                if (member.name === user && roles.shift().slice(1) === department)
-                    member.lastReviewDate = reviewDate;
-            });
-            TeamManager.WriteTeamToFile(team);
 
 
-            // TODO: Created an array of timers to store them for each department, i have to create the validation for which the timer stop when a certain amount of time is passed. Every time a member makes a daily review a personal timer starts checking if the date of the review is equal to the moment now plus a day at eleven o'clock in the evening. Also every time a review is completed a check on the timers variable is made to assure that there are not multiple instances of the same timer for the same department 
 
-            let timer = new Timer(department, reviewDate);
+            // TODO: Created an array of timers to store them for each department, i have to create the validation for which the timer stop when a certain amount of time is passed. Every time a member makes a daily review a personal timer starts checking if the date of the review is equal to the moment now plus a day at eleven o'clock in the evening. Also every time a review is completed a check on the timers variable is made to assure that there are not multiple instances of the same timer for the same department. 
+
+            let timer = new Timer(dailyReviewElement.department, dailyReviewElement.date);
 
             this.timers.push(timer);
 
@@ -271,7 +269,7 @@ class WebSocket {
         return data;
     }
 
-    GetRoles(member) {
+    GetDepartmentRoles(member) {
         const memberRoles = [];
         member.roles.forEach(r => {
             if (r.startsWith('!')) {

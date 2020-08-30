@@ -1,4 +1,5 @@
 const fs = require('fs');
+const config = require('./config.json');
 
 const dpPrefix = '!';
 
@@ -66,7 +67,36 @@ function ReadJsonTESTING() {
         return error;
     }
     return team;
+}
 
+function GetDepartmentLeader(department) {
+    const team = GetJsonTeam();
+    let leaders = [];
+    team.forEach(member => {
+        const memberRoles = GetRoles(member);
+        memberRoles.forEach(r => {
+            if (r === 'Referente')
+                leaders.push(member);
+        });
+    });
+    const lead;
+    leaders.forEach(leader => {
+        const leaderRoles = GetRoles(leader);
+        leaderRoles.forEach(r => {
+            if (r == `${config.prefix}${department}`)
+                lead = leader.name;
+        });
+    });
+
+    return lead;
+}
+
+function GetRoles(member) {
+    const memberRoles = [];
+    member.roles.forEach(r => {
+        memberRoles.push(r);
+    });
+    return memberRoles;
 }
 
 
@@ -74,5 +104,6 @@ module.exports = {
     WriteTeamToFile,
     BuildTeam,
     ReadJsonTESTING,
-    GetJsonTeam
+    GetJsonTeam,
+    GetDepartmentLeader
 }
