@@ -1,8 +1,6 @@
 const fs = require('fs');
 const config = require('./config.json');
 
-const dpPrefix = '!';
-
 function WriteTeamToFile(team) {
     if (!team)
         return console.log("You must invoke the BuildTeam function before this!");
@@ -34,7 +32,7 @@ function BuildTeam(message) {
         singleMember.name = member.user.username;
 
         member.roles.cache.each(role => {
-            if (role.name.startsWith(dpPrefix))
+            if (role.name.startsWith(config.prefix) || role.name === config.lead)
                 singleMember.roles.push(role.name);
         });
 
@@ -69,22 +67,22 @@ function ReadJsonTESTING() {
     return team;
 }
 
-function GetDepartmentLeader(department) {
+function GetDepartmentLeaderID(department) {
     const team = GetJsonTeam();
     let leaders = [];
     team.forEach(member => {
         const memberRoles = GetRoles(member);
         memberRoles.forEach(r => {
-            if (r === `${dpPrefix}Referente`)
+            if (r === config.lead)
                 leaders.push(member);
         });
     });
-    const lead = '';
+    let lead = '';
     leaders.forEach(leader => {
         const leaderRoles = GetRoles(leader);
         leaderRoles.forEach(r => {
             if (r == `${config.prefix}${department}`)
-                lead = leader.name;
+                lead = leader.id;
         });
     });
 
@@ -105,5 +103,5 @@ module.exports = {
     BuildTeam,
     ReadJsonTESTING,
     GetJsonTeam,
-    GetDepartmentLeader
+    GetDepartmentLeaderID
 }

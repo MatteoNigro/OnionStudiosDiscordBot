@@ -8,6 +8,7 @@ const ReviewDatesManager = require('../ReviewDatesManager');
 const moment = require('moment');
 const momentTimer = require('moment-timer');
 const Timer = require('../Timer');
+const config = require('../config.json');
 
 
 class WebSocket {
@@ -227,24 +228,23 @@ class WebSocket {
                 reviewChannel.send(embed);
 
 
-            // Notification System Started
-
-
 
 
             // TODO: Created an array of timers to store them for each department, i have to create the validation for which the timer stop when a certain amount of time is passed. Every time a member makes a daily review a personal timer starts checking if the date of the review is equal to the moment now plus a day at eleven o'clock in the evening. Also every time a review is completed a check on the timers variable is made to assure that there are not multiple instances of the same timer for the same department. 
 
-            // CHeck error on daily.js for !Referente roles cause that check doesn't work.
-
             // P.S. Avoid all this timer thing when a member is modifying an old review with a flag or something like that
 
-            let timer = new Timer(dailyReviewElement.department, dailyReviewElement.date, this.client);
+            let newTimer = new Timer(dailyReviewElement.department, dailyReviewElement.date, this.client, this.team);
 
-            this.timers.push(timer);
+            for (let i = 0; i < this.timers.length; i++) {
+                const timer = this.timers[i];
+                if (timer.department === dailyReviewElement.department) {
+                    timer.StopTimer();
+                    this.timers.splice(i, 1);
+                }
+            }
 
-
-
-
+            this.timers.push(newTimer);
 
             res.redirect('/sendReview');
 
@@ -276,7 +276,7 @@ class WebSocket {
     GetDepartmentRoles(member) {
         const memberRoles = [];
         member.roles.forEach(r => {
-            if (r.startsWith('!')) {
+            if (r.startsWith(config.prefix)) {
                 memberRoles.push(r);
             }
         });

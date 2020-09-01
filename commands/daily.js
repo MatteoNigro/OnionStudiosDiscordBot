@@ -30,7 +30,7 @@ module.exports = {
         if (config.TESTING == false) {
             webSocket.team = team;
             team.forEach(member => {
-                if (member.name === user && member.roles.find(role => role === "!Referente")) {
+                if (member.name === user && !member.roles.find(role => role === config.lead)) {
                     message.author.send("Non sei un referente, spero tu abbia una buona ragione per fare quello che stai per fare. Se non ce l'hai lascia perdere 👺");
                 }
             });
