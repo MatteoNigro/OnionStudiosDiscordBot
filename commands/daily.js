@@ -5,7 +5,7 @@ const ReviewChannelManager = require('../ReviewChannelManager');
 
 module.exports = {
     name: 'daily',
-    desription: 'Crea una nuova daily review per il tuo dipartimento',
+    description: 'Crea una nuova daily review per il tuo dipartimento',
     cooldown: 5,
     args: false,
     minArgs: 0,

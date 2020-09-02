@@ -228,10 +228,6 @@ class WebSocket {
                 reviewChannel.send(embed);
 
 
-
-
-            // TODO: Created an array of timers to store them for each department, i have to create the validation for which the timer stop when a certain amount of time is passed. Every time a member makes a daily review a personal timer starts checking if the date of the review is equal to the moment now plus a day at eleven o'clock in the evening. Also every time a review is completed a check on the timers variable is made to assure that there are not multiple instances of the same timer for the same department. 
-
             // P.S. Avoid all this timer thing when a member is modifying an old review with a flag or something like that
 
             let newTimer = new Timer(dailyReviewElement.department, dailyReviewElement.date, this.client, this.team);
@@ -289,6 +285,10 @@ class WebSocket {
         const token = this.token;
         const link = `${base}:${port}?token=${token}`;
         return link;
+    }
+
+    GetTimers() {
+        return this.timers;
     }
 
 }

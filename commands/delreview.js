@@ -1,6 +1,7 @@
 const ReviewChannelManager = require('../ReviewChannelManager');
 const moment = require('moment');
 const ReviewDatesManager = require('../ReviewDatesManager');
+const daily = require('./daily');
 
 module.exports = {
     name: 'delreview',
@@ -27,13 +28,17 @@ module.exports = {
         }
 
         const dailyAlreadyDone = ReviewDatesManager.GetWrittenReviewDates();
-        const foundCheck = dailyAlreadyDone.indexOf(dateToDelete);
-        if (foundCheck < 0) {
+
+        let found = false;
+        dailyAlreadyDone.forEach(daily => {
+            if (dateToDelete === daily.date)
+                found = true;
+        });
+
+        if (!found) {
             message.author.send(`La review in data ${dateToDelete} che stai cercando di eliminare non è mai stata fatta, quindi non c'è un cazzo da eliminare 😃`);
             return;
         }
-
-        // TODO: ONLY AFTER THE ABOVE --> Create the timer feature to keep track of the time between reviews.
 
         let lastMessageFound = lastMessage;
 
@@ -44,17 +49,28 @@ module.exports = {
                 before: lastMessageFound.id
             }, lastMessageFound, dateToDelete))) {
 
+
+            let dailyDeleted = false;
             if (dailyReviewFound) {
-                const dates = ReviewDatesManager.GetWrittenReviewDates();
-                const index = dates.indexOf(dateToDelete);
-                if (index > -1) {
-                    dates.splice(index, 1);
-                    ReviewDatesManager.WriteAllDateReviewsToFile(dates);
-                    message.author.send(`Trovata! La review in data ${dateToDelete} è stata eliminata dalla lista`);
-                    break;
+                const daily = ReviewDatesManager.GetWrittenReviewDates();
+
+                for (let i = 0; i < daily.length; i++) {
+                    const d = daily[i];
+                    if (d.date === dateToDelete); {
+                        daily.splice(i, 1);
+                        dailyDeleted = true;
+                    }
                 }
+
+                // TODO: Not tested already, test it first of all 
+
+                if (dailyDeleted) {
+                    ReviewDatesManager.WriteAllDateReviewsToFile(daily);
+                    message.author.send(`Trovata! La review in data ${dateToDelete} è stata eliminata dalla lista`);
+                    return;
+                }
+
                 message.author.send(`Qualcosa è andato storto, contattare l'assistenza indipendentemente dalla riuscita o meno dell'operazione`);
-                break;
             }
         }
 

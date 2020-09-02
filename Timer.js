@@ -36,7 +36,7 @@ class Timer {
                 memberToNotify.send(`Sei in ritardo per la review di oggi ${reviewDate.format("DD[/]MM[/]YYYY")}!!! 🤬🤬`);
             }
 
-            if (now.isAfter(reviewDate.add(2, 'days'), 'day'))
+            if (now.isAfter(reviewDate.add(1, 'day'), 'day'))
                 this.StopTimer();
 
         });
