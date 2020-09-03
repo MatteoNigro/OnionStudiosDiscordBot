@@ -21,6 +21,7 @@ class WebSocket {
         this.team;
         this.reviewChannelID;
         this.timers = [];
+        this.modifier;
 
         var hbs = exphbs.create({
             extname: 'hbs',
@@ -180,8 +181,13 @@ class WebSocket {
             const date = moment(req.body.reviewDate)
             const today = moment();
 
-            if (date.isAfter(today)) {
-                this.messageRef.author.send(`Stai cercando di fare una review per un giorno successivo ad oggi. Non ha il minimo senso logico.`);
+            if (date.isBefore(today, 'day') && this.modifier === false) {
+                this.messageRef.author.send(`Allora, analizziamo la situazione: stai cercando di fare una review per un giorno passato senza aver specificato il modificatore nella richiesta COME TI ERA STATO ESPLICITAMENTE DETTO. Lurida sonda anale arrugginita, che cazzo ti vengono dette le cose a fare se poi tu fai quel cazzo che vuoi? E col cazzo che ti dico qual è il modificatore, te lo vai a cercare. IDIOTA!!! 😈`);
+                return;
+            }
+
+            if (date.isAfter(today, 'day')) {
+                this.messageRef.author.send(`Ma scusa eh, dio 🤬, io spero che tu l'abbia fatto inavvertitamente perchè cercare di fare una review per un giorno futuro è come cagare di più oggi per non farla domani. Non ha un cazzo di senso logico!!!`);
                 return;
             }
 
@@ -227,20 +233,19 @@ class WebSocket {
             if (reviewChannel)
                 reviewChannel.send(embed);
 
+            if (this.modifier === false) {
+                let newTimer = new Timer(dailyReviewElement.department, dailyReviewElement.date, this.client, this.team);
 
-            // P.S. Avoid all this timer thing when a member is modifying an old review with a flag or something like that
-
-            let newTimer = new Timer(dailyReviewElement.department, dailyReviewElement.date, this.client, this.team);
-
-            for (let i = 0; i < this.timers.length; i++) {
-                const timer = this.timers[i];
-                if (timer.department === dailyReviewElement.department) {
-                    timer.StopTimer();
-                    this.timers.splice(i, 1);
+                for (let i = 0; i < this.timers.length; i++) {
+                    const timer = this.timers[i];
+                    if (timer.department === dailyReviewElement.department) {
+                        timer.StopTimer();
+                        this.timers.splice(i, 1);
+                    }
                 }
-            }
 
-            this.timers.push(newTimer);
+                this.timers.push(newTimer);
+            }
 
             res.redirect('/sendReview');
 

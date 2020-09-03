@@ -42,7 +42,7 @@ module.exports = {
 
         let lastMessageFound = lastMessage;
 
-        message.author.send(`Sto cercando la daily review in data ${dateToDelete} ... \nLa durata della ricerca dipende da quanto è vecchia la review, nel caso ci vorrà un po \nNel frattempo puoi comunque eseguire altre operazioni che non dipendono da questa.`);
+        message.author.send(`Sto cercando la daily review in data ${dateToDelete} ... \nLa durata della ricerca dipende da quanto è vecchia la review, nel caso ci vorrà un po\' \nNel frattempo puoi comunque eseguire altre operazioni che non dipendono da questa.`);
 
         while (lastMessageFound !== (lastMessageFound = await logReturnLast(reviewChannel, {
                 limit: 2,
@@ -61,8 +61,6 @@ module.exports = {
                         dailyDeleted = true;
                     }
                 }
-
-                // TODO: Not tested already, test it first of all 
 
                 if (dailyDeleted) {
                     ReviewDatesManager.WriteAllDateReviewsToFile(daily);

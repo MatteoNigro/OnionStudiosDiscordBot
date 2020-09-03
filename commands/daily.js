@@ -13,6 +13,16 @@ module.exports = {
     usage: ' ',
     guildOnly: true,
     execute(message, args, webSocket) {
+        webSocket.modifier = false;
+
+        const mod = args.shift();
+        if (mod && mod != 'mod') {
+            message.author.send(`Che cazzo scrivi parole a caso?! L'argomento ${mod} non significa una sega, forse intendevi "mod". COGLIONE!!! 💩💩💩`);
+            return;
+        }
+
+        if (mod && mod === 'mod')
+            webSocket.modifier = true;
 
         let team = [];
 
@@ -20,7 +30,6 @@ module.exports = {
             team = TeamManager.BuildTeam(message);
             TeamManager.WriteTeamToFile(team);
         }
-
 
         const link = webSocket.GenerateWebLink();
 
@@ -40,7 +49,6 @@ module.exports = {
 
         const channels = ReviewChannelManager.GetReviewChannelID(webSocket, message);
         webSocket.reviewChannelID = channels.shift();
-
 
         const embed = new Discord.MessageEmbed()
             .setColor('#0099ff')
