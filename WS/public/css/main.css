@@ -11,11 +11,23 @@
 }
 
 #title,
-#departmentLabel,
-#dataLabel,
 #submitButton {
   text-align: center;
 
+}
+
+#dataLabel {
+  text-align: center;
+  font-size: 2em;
+}
+
+#dateInput {
+  font-size: 25px;
+}
+
+#departmentLabel {
+  text-align: center;
+  font-size: 2em;
 }
 
 .grid-container {
@@ -39,4 +51,9 @@
   padding: 5px;
   font-size: 18px;
   resize: none;
+}
+
+.submitButton {
+  font-size: 2em;
+  margin-left: 25em;
 }
