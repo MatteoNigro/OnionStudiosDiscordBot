@@ -50,10 +50,17 @@ module.exports = {
         const channels = ReviewChannelManager.GetReviewChannelID(webSocket, message);
         webSocket.reviewChannelID = channels.shift();
 
+        let title = 'Create New Daily Review';
+
+        if (webSocket.modifier) {
+            title = 'Modify Old Daily Review';
+        }
+
         const embed = new Discord.MessageEmbed()
             .setColor('#0099ff')
-            .setTitle('Web Link')
-            .setURL(link);
+            .setTitle(title)
+            .setURL(link)
+            .addField('🖕🖕 Clicca sul link qui sopra 🖕🖕', '\u200B');
 
 
         message.author.send(embed);

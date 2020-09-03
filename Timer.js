@@ -6,7 +6,7 @@ const config = require('./config.json');
 class Timer {
     constructor(department, lastReviewDate, client, team) {
         this.department = department;
-        this.timer = new moment.duration(10, 'seconds').timer({
+        this.timer = new moment.duration(30, 'minutes').timer({
             start: true,
             loop: true
         }, () => {

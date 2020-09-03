@@ -3,10 +3,8 @@ const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const path = require('path');
 const Discord = require("discord.js");
-const TeamManager = require('../TeamManager');
 const ReviewDatesManager = require('../ReviewDatesManager');
 const moment = require('moment');
-const momentTimer = require('moment-timer');
 const Timer = require('../Timer');
 const config = require('../config.json');
 
@@ -186,12 +184,15 @@ class WebSocket {
                 return;
             }
 
+            if (date.isSame(today, 'day') && this.modifier) {
+                this.messageRef.author.send(`Mmmh vediamo, stai usando il modificatore (che serve per modificare review vecchie) per fare la review di oggi. Ti senti per caso galvanizzato dal fatto che abbiano costruito una tua statua di cerume oppure sei idiota per partito preso? No chiedo eh, sono curioso... 😑😑😑`);
+                return;
+            }
+
             if (date.isAfter(today, 'day')) {
                 this.messageRef.author.send(`Ma scusa eh, dio 🤬, io spero che tu l'abbia fatto inavvertitamente perchè cercare di fare una review per un giorno futuro è come cagare di più oggi per non farla domani. Non ha un cazzo di senso logico!!!`);
                 return;
             }
-
-            // TODO: Prendere quello che è stato scritto nella review e ricaricare la pagina con quelle info come risposta per evitare il caricamento infinito.
 
             // DD/MM/YYY
             let reviewDate = date.format("DD[/]MM[/]YYYY");
@@ -222,7 +223,7 @@ class WebSocket {
                 .setTitle(`Daily Review: ${dailyReviewElement.department} [${dailyReviewElement.date}]`);
 
             webPageData.forEach(memberData => {
-                embed.addField('\u200B', `__**${memberData.name}**__`)
+                embed.addField('\u200B', `🔴 __**${memberData.name}**__`)
                     .addField('* Ultime 24 ore: ', memberData.last24)
                     .addField('* Prossime 24 ore: ', memberData.next24)
                     .addField('* Problematiche: ', memberData.issue);
